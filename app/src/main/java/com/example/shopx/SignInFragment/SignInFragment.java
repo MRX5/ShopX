@@ -1,4 +1,4 @@
-package com.example.shopx.LoginFragment;
+package com.example.shopx.SignInFragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import com.example.shopx.HomeFragment.HomeFragment;
 import com.example.shopx.R;
-import com.example.shopx.Repository;
 import com.example.shopx.SearchFragment.SearchFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -23,7 +22,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class LoginFragment extends Fragment implements View.OnClickListener {
+public class SignInFragment extends Fragment implements View.OnClickListener {
 
     private TextInputEditText emailTxt;
     private TextInputEditText passwordTxt;
@@ -48,12 +47,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public LoginFragment() {
+    public SignInFragment() {
         // Required empty public constructor
     }
 
-    public static LoginFragment newInstance() {
-        LoginFragment fragment = new LoginFragment();
+    public static SignInFragment newInstance() {
+        SignInFragment fragment = new SignInFragment();
         return fragment;
     }
 
@@ -61,6 +60,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         listener.showBottomNavigation(false);
+        mAuth=FirebaseAuth.getInstance();
     }
 
     @Override
@@ -92,15 +92,18 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         switch (viewId)
         {
             case R.id.sign_in_button:
+                signIn();
                 break;
             case R.id.sign_up_button:
+
                 break;
             case R.id.forgot_password_button:
                 break;
         }
     }
 
-    private void SignIn() {
+
+    private void signIn() {
         String email=emailTxt.getText().toString().trim();
         String password=passwordTxt.getText().toString().trim();
         mAuth.signInWithEmailAndPassword(email,password)
@@ -114,8 +117,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         }
                         else
                         {
-                            String error=task.getException().toString();
-                            Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                            String error=task.getException().getMessage();
+                            Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
                         }
                     }
                 });

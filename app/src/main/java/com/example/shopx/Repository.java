@@ -2,9 +2,15 @@ package com.example.shopx;
 
 import android.app.Application;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.shopx.HomeFragment.HomeFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -15,6 +21,7 @@ import com.example.shopx.Model.Mobile;
 
 public class Repository {
     private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
     public Repository(Application app)
     {
         db=FirebaseFirestore.getInstance();
@@ -42,4 +49,5 @@ public class Repository {
     {
 
     }
+
 }

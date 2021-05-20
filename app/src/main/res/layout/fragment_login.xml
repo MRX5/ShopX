@@ -57,7 +57,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout3" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/appCompatButton"
+        android:id="@+id/sign_in_button"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
@@ -78,9 +78,10 @@
         android:text="Don't have an account?"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@+id/textInputLayout3"
-        app:layout_constraintTop_toBottomOf="@+id/appCompatButton" />
+        app:layout_constraintTop_toBottomOf="@+id/sign_in_button" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/sign_up_button"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">ShopX</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="mobiles">Mobiles</string>
+    <string name="best_deals">Best deals</string>
+    <string name="categories">Categories</string>
+    <string name="labtops">Labtops</string>
+    <string name="home">Home</string>
+    <string name="wishlist">Wishlist</string>
+    <string name="profile">Profile</string>
+    <string name="cart">Cart</string>
+    <string name="search_products">Search products</string>
+    <string name="specifications">Specifications</string>
+    <string name="brand">Brand</string>
+    <string name="os_type">OS Type</string>
+    <string name="storage">Storage</string>
+    <string name="ram">RAM</string>
+    <string name="cpu">CPU</string>
+    <string name="display_size">Display Size</string>
+    <string name="resolution">Resolution</string>
+    <string name="rear_camera">Rear Camera</string>
+    <string name="front_camera">Front Camera</string>
+    <string name="operating_system">Operating System</string>
+    <string name="favourite">Favourite</string>
+    <string name="sign_in">SIGN IN</string>
+</resources>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".MobilesFragment.MobilesFragment">
+    <include
+        android:id="@+id/my_toolbar"
+        layout="@layout/my_toolbar"/>
+
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/home_search_view"
+            style="@style/search_view_style"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/search_view_round"
+            android:elevation="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/my_toolbar" />
+
+        <ImageButton
+            android:id="@+id/filter_btn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="24dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitXY"
+            android:src="@drawable/icon_filter2"
+            app:layout_constraintStart_toStartOf="@+id/home_search_view"
+            app:layout_constraintTop_toBottomOf="@+id/home_search_view" />
+
+        <TextView
+            android:id="@+id/results_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:textColor="@color/header_text"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/filter_btn"
+            app:layout_constraintStart_toEndOf="@+id/filter_btn"
+            app:layout_constraintTop_toTopOf="@+id/filter_btn" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_mobiles"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/filter_btn" />
+</androidx.constraintlayout.widget.ConstraintLayout>

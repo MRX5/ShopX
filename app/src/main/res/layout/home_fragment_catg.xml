@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/category_mobiles"
+        android:layout_width="90dp"
+        android:layout_height="116dp"
+        android:layout_marginStart="24dp"
+        app:cardCornerRadius="10dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/item1" />
+
+        <TextView
+            style="@style/Category_Name_Style"
+            android:text="@string/mobiles" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/category_laptops"
+        android:layout_width="90dp"
+        android:layout_height="116dp"
+        android:layout_marginStart="18dp"
+        app:cardCornerRadius="10dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/item2" />
+
+        <TextView
+            style="@style/Category_Name_Style"
+            android:text="@string/labtops" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/category_fashion"
+        android:layout_width="90dp"
+        android:layout_height="116dp"
+        android:layout_marginStart="18dp"
+        app:cardCornerRadius="10dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/item3" />
+
+        <TextView
+            style="@style/Category_Name_Style"
+            android:text="Fashion" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/category_home"
+        android:layout_width="90dp"
+        android:layout_height="116dp"
+        android:layout_marginStart="18dp"
+        app:cardCornerRadius="10dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/item4" />
+
+        <TextView
+            style="@style/Category_Name_Style"
+            android:text="Home" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/category_beauty"
+        android:layout_width="90dp"
+        android:layout_height="116dp"
+        android:layout_marginStart="18dp"
+        app:cardCornerRadius="10dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/item4" />
+
+        <TextView
+            style="@style/Category_Name_Style"
+            android:text="@string/home" />
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

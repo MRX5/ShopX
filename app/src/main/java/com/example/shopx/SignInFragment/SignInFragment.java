@@ -105,6 +105,7 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
     private void signIn() {
         String email=emailTxt.getText().toString().trim();
         String password=passwordTxt.getText().toString().trim();
+
         mAuth.signInWithEmailAndPassword(email,password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override

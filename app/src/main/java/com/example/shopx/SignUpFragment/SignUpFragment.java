@@ -11,16 +11,22 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.shopx.MainActivity.MainActivity;
 import com.example.shopx.R;
+import com.example.shopx.RegisterActivity.RegisterActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
 
 
 public class SignUpFragment extends Fragment {
@@ -93,15 +99,32 @@ public class SignUpFragment extends Fragment {
                     .addOnCompleteListener(task -> {
                         if(task.isSuccessful())
                         {
-                            saveUserData();
+                            saveUserData(username,email);
                             launchMainActivity();
                         }
+                        else
+                        {
+                            Toast.makeText(getActivity(),task.getException().getMessage(),Toast.LENGTH_LONG).show();
+                        }
                     });
+
         }
 
     }
 
-    private void saveUserData() {
+
+    private void saveUserData(String username,String email) {
+        HashMap<String,Object>mp=new HashMap<>();
+        mp.put("username",username);
+        mp.put("email",email);
+        mFirestore.collection("Users")
+                .add(mp)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Toast.makeText(getActivity(),"Done",Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void launchMainActivity() {

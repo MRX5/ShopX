@@ -24,4 +24,7 @@
     <string name="operating_system">Operating System</string>
     <string name="favourite">Favourite</string>
     <string name="sign_in">SIGN IN</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="sign_up">SIGN UP</string>
 </resources>

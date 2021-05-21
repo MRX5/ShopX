@@ -1,6 +1,7 @@
 package com.example.shopx.SignInFragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,9 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.shopx.HomeFragment.HomeFragment;
+import com.example.shopx.MainActivity.MainActivity;
 import com.example.shopx.R;
-import com.example.shopx.SearchFragment.SearchFragment;
+import com.example.shopx.SignUpFragment.SignUpFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
@@ -31,20 +32,10 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
     private MaterialButton forgotPasswordBtn;
     private FirebaseAuth mAuth;
 
-    private SearchFragment.OnSearchViewClickListener listener;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if(context instanceof SearchFragment.OnSearchViewClickListener)
-        {
-            listener=(SearchFragment.OnSearchViewClickListener)context;
-        }
-        else
-        {
-            throw new ClassCastException(context.toString()
-                    + " must implement searchProductListener");
-        }
     }
 
     public SignInFragment() {
@@ -59,14 +50,14 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        listener.showBottomNavigation(false);
+
         mAuth=FirebaseAuth.getInstance();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_login, container, false);
+        return inflater.inflate(R.layout.fragment_sign_in, container, false);
     }
 
     @Override
@@ -95,11 +86,19 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
                 signIn();
                 break;
             case R.id.sign_up_button:
-
+                SignUpFragment signUpFragment=SignUpFragment.newInstance();
+                loadFragment(signUpFragment);
                 break;
             case R.id.forgot_password_button:
                 break;
         }
+    }
+
+    private void loadFragment(Fragment fragment) {
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.register_frame_layout,fragment)
+                .addToBackStack(null)
+                .commit();
     }
 
 
@@ -112,8 +111,7 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful())
                         {
-                            HomeFragment homeFragment=HomeFragment.newInstance();
-                            loadFragment(homeFragment);
+                            launchMainActivity();
                         }
                         else
                         {
@@ -124,12 +122,10 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
                 });
     }
 
-    private void loadFragment(Fragment fragment)
+    private void launchMainActivity()
     {
-        getFragmentManager().beginTransaction()
-                .remove(this)
-                .replace(R.id.main_container,fragment)
-                .addToBackStack(null)
-                .commit();
+        Intent intent=new Intent(getActivity(), MainActivity.class);
+        startActivity(intent);
+        getActivity().finish();
     }
 }

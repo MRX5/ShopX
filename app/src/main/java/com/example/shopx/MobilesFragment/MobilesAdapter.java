@@ -1,6 +1,7 @@
 package com.example.shopx.MobilesFragment;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -17,17 +19,19 @@ import com.example.shopx.R;
 import java.util.List;
 
 import com.example.shopx.Model.Mobile;
+import com.example.shopx.Repository;
 
 public class MobilesAdapter extends RecyclerView.Adapter<MobilesAdapter.viewHolder> {
     private List<Mobile>mobiles;
     private Context mContext;
     private onItemClickListener listener;
-
+    private Repository repository;
     public MobilesAdapter(Context mContext, onItemClickListener listener)
     {
 
         this.mContext=mContext;
         this.listener=listener;
+        repository=new Repository();
     }
     @NonNull
     @Override
@@ -40,6 +44,13 @@ public class MobilesAdapter extends RecyclerView.Adapter<MobilesAdapter.viewHold
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
         holder.product_name.setText(mobiles.get(position).getName());
         holder.product_price.setText(mobiles.get(position).getPrice());
+        if(mobiles.get(position).isInWishlist()) {
+            holder.fav_btn.setImageDrawable(mContext.getResources().getDrawable(R.drawable.icon_favourite_green,null));
+        }
+        else
+        {
+            holder.fav_btn.setImageDrawable(mContext.getResources().getDrawable(R.drawable.icon_favourite,null));
+        }
         Glide.with(mContext).load("https://cf2.s3.souqcdn.com/item/2020/12/13/13/21/74/96/9/item_L_132174969_ffac6131feef0.jpg").into(holder.product_image);
     }
 
@@ -65,8 +76,29 @@ public class MobilesAdapter extends RecyclerView.Adapter<MobilesAdapter.viewHold
             product_name=itemView.findViewById(R.id.product_name);
             product_price=itemView.findViewById(R.id.product_price);
             product_image=itemView.findViewById(R.id.product_image);
+
             fav_btn=itemView.findViewById(R.id.fav_btn);
+
             add_cart_btn=itemView.findViewById(R.id.cart_btn);
+
+            fav_btn.setOnClickListener(v->
+            {
+                boolean isWish=mobiles.get(getAdapterPosition()).isInWishlist();
+                if (isWish)
+                {
+                    fav_btn.setImageDrawable(mContext.getResources().getDrawable(R.drawable.icon_favourite,null));
+                    mobiles.get(getAdapterPosition()).setInWishlist(false);
+                }
+                else
+                {
+                    fav_btn.setImageDrawable(mContext.getResources().getDrawable(R.drawable.icon_favourite_green,null));
+                    mobiles.get(getAdapterPosition()).setInWishlist(true);
+                }
+
+                repository.addToWishlist(mobiles.get(getAdapterPosition()).getId(),
+                        isWish);
+
+          });
             itemView.setOnClickListener(this);
         }
 

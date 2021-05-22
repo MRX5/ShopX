@@ -1,5 +1,6 @@
 package com.example.shopx.ProfileFragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,7 +14,11 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.shopx.R;
+import com.example.shopx.RegisterActivity.RegisterActivity;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
 public class ProfileFragment extends Fragment {
@@ -21,6 +26,7 @@ public class ProfileFragment extends Fragment {
     private Button signOutBtn;
     private TextView usernameTxt;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
     public ProfileFragment() {
         // Required empty public constructor
     }
@@ -34,6 +40,7 @@ public class ProfileFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth=FirebaseAuth.getInstance();
+        db=FirebaseFirestore.getInstance();
     }
 
     @Override
@@ -50,7 +57,16 @@ public class ProfileFragment extends Fragment {
         if(mAuth.getCurrentUser()!=null)
         {
             usernameTxt.setVisibility(View.VISIBLE);
-            usernameTxt.setText(mAuth.getCurrentUser().getEmail());
+            db.collection("Users")
+                    .document(mAuth.getCurrentUser().getUid())
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            usernameTxt.setText(documentSnapshot.get("username").toString());
+                        }
+                    });
+
         }
         else
         {
@@ -59,8 +75,14 @@ public class ProfileFragment extends Fragment {
 
         signOutBtn.setOnClickListener(v -> {
             mAuth.signOut();
-            usernameTxt.setVisibility(View.GONE);
+            launchRegisterActivity();
         });
+    }
+
+    private void launchRegisterActivity() {
+        Intent intent=new Intent(getActivity(),RegisterActivity.class);
+        startActivity(intent);
+        getActivity().finish();
     }
 
 

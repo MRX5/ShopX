@@ -6,7 +6,32 @@ public class Mobile {
     private String price;
     private String imageUrl;
     private String description;
+    private boolean inWishlist;
+    private boolean inCart;
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public boolean isInWishlist() {
+        return inWishlist;
+    }
+
+    public void setInWishlist(boolean inWishlist) {
+        this.inWishlist = inWishlist;
+    }
+
+    public boolean isInCart() {
+        return inCart;
+    }
+
+    public void setInCart(boolean inCart) {
+        this.inCart = inCart;
+    }
 
     public String getId() {
         return id;
@@ -17,11 +42,11 @@ public class Mobile {
     }
 
 
-
-    public Mobile(String id,String name, String price) {
-        this.id=id;
+    public Mobile(String id, String name, String price,boolean inWishlist) {
+        this.id = id;
         this.name = name;
         this.price = price;
+        this.inWishlist=inWishlist;
     }
 
     public String getImageUrl() {
@@ -41,15 +66,13 @@ public class Mobile {
     }
 
     public String getPrice() {
-        int cnt=0;
-        StringBuilder builder=new StringBuilder();
-        for(int i=price.length()-1;i>=0;i--)
-        {
+        int cnt = 0;
+        StringBuilder builder = new StringBuilder();
+        for (int i = price.length() - 1; i >= 0; i--) {
             builder.append(price.charAt(i));
             cnt++;
-            if(cnt==3)
-            {
-                cnt=0;
+            if (cnt == 3) {
+                cnt = 0;
                 builder.append(',');
             }
         }

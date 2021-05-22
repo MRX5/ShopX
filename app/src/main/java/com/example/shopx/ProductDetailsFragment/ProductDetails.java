@@ -65,7 +65,7 @@ public class ProductDetails extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         listener.showBottomNavigation(false);
-        repository=new Repository(getActivity().getApplication());
+        repository=new Repository();
         if (getArguments() != null) {
             productID = getArguments().getString(PRODUCT_ID);
         }

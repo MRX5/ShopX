@@ -100,7 +100,6 @@ public class SignUpFragment extends Fragment {
                         if(task.isSuccessful())
                         {
                             saveUserData(username,email);
-                            launchMainActivity();
                         }
                         else
                         {
@@ -118,13 +117,16 @@ public class SignUpFragment extends Fragment {
         mp.put("username",username);
         mp.put("email",email);
         mFirestore.collection("Users")
-                .add(mp)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                .document(mAuth.getCurrentUser().getUid())
+                .set(mp)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
+                    public void onSuccess(Void aVoid) {
                         Toast.makeText(getActivity(),"Done",Toast.LENGTH_SHORT).show();
+                        launchMainActivity();
                     }
                 });
+
     }
 
     private void launchMainActivity() {

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +48,7 @@ public class MobilesFragment extends Fragment implements MobilesAdapter.onItemCl
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        repository=new Repository(getActivity().getApplication());
+        repository=new Repository(getViewLifecycleOwner());
         adapter=new MobilesAdapter(getContext(),this);
 
     }

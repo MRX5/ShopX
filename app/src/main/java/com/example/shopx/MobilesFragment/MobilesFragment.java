@@ -8,6 +8,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.shopx.MainActivity.SharedViewModel;
 import com.example.shopx.Model.Mobile;
 import com.example.shopx.ProductDetailsFragment.ProductDetails;
 import com.example.shopx.R;
@@ -40,7 +44,8 @@ public class MobilesFragment extends Fragment implements MobilesAdapter.onItemCl
     private ProgressBar progressBar;
     private MobilesAdapter adapter;
     private Repository repository;
-    //private List<Mobile> _Mobiles = null;
+    private List<Mobile> mobilesCopy;
+    private SharedViewModel viewModel;
 
     public MobilesFragment() {
         // Required empty public constructor
@@ -55,8 +60,7 @@ public class MobilesFragment extends Fragment implements MobilesAdapter.onItemCl
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
+        viewModel = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
         adapter = new MobilesAdapter(getContext(), this);
 
     }
@@ -64,6 +68,7 @@ public class MobilesFragment extends Fragment implements MobilesAdapter.onItemCl
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         repository = new Repository(getViewLifecycleOwner());
         return inflater.inflate(R.layout.fragment_mobiles, container, false);
     }
@@ -74,38 +79,20 @@ public class MobilesFragment extends Fragment implements MobilesAdapter.onItemCl
 
 
         initializeViews(view);
-   /*     if (_Mobiles != null) {
-            Log.d("Walker", "_Mobiles: " + _Mobiles.size());
-            RefreshMobiles();
-        } else {
-            loadMobiles();
-        }*/
-        loadMobiles();
+
+        if(viewModel.mobiles!=null)  // load mobiles from viewModel
+        {
+            viewModel.mobiles.observe(this, mobiles -> {
+                adapter.setMobiles(mobiles);
+            });
+        }
+        else {
+            loadMobiles();         // load mobiles from Firestore
+        }
 
         setupRecycler();
 
     }
-
-    private void loadMobiles() {
-        progressBar.setVisibility(View.VISIBLE);
-        repository.getMobiles().observe(this, mobiles -> {
-            progressBar.setVisibility(View.GONE);
-            //_Mobiles = mobiles;
-            adapter.setMobiles(mobiles);
-            resultsNumber.setText("Filter " + mobiles.size() + " results");
-        });
-    }
-
-/*    private void RefreshMobiles() {
-        progressBar.setVisibility(View.VISIBLE);
-        List<Mobile> temp = new ArrayList<>(_Mobiles);
-
-         repository.RefreshMobiles(temp).observe(this,mobiles ->{
-             progressBar.setVisibility(View.GONE);
-             _Mobiles = mobiles;
-             adapter.setMobiles(_Mobiles);
-         });
-    }*/
 
     private void initializeViews(View view) {
         Toolbar toolbar = view.findViewById(R.id.my_toolbar);
@@ -127,13 +114,31 @@ public class MobilesFragment extends Fragment implements MobilesAdapter.onItemCl
         recyclerView.setAdapter(adapter);
     }
 
+    private void loadMobiles() {
+
+            progressBar.setVisibility(View.VISIBLE);
+            repository.getMobiles().observe(this, mobiles -> {
+                progressBar.setVisibility(View.GONE);
+                adapter.setMobiles(mobiles);
+                viewModel.sendMobiles(mobiles);
+                resultsNumber.setText("Filter " + mobiles.size() + " results");
+            });
+    }
+
+
     @Override
     public void onItemClick(String itemId, boolean inWishlist, boolean inCart) {
-        Log.d("mym", " " + inWishlist);
         ProductDetails fragment = ProductDetails.newInstance(itemId, inWishlist, inCart);
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_container, fragment)
                 .addToBackStack(null)
                 .commit();
     }
+
+    @Override
+    public void onDestroy() {
+        viewModel.cleanMemory();
+        super.onDestroy();
+    }
+
 }

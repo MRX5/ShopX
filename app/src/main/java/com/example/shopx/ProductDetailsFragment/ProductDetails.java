@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,9 +22,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.shopx.MainActivity.SharedViewModel;
+import com.example.shopx.Model.Mobile;
 import com.example.shopx.R;
 import com.example.shopx.Repository;
 import com.example.shopx.SearchFragment.SearchFragment;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,7 +47,9 @@ public class ProductDetails extends Fragment {
     private boolean inCart;
     private boolean inWishlist;
     private Repository repository;
-
+    private SharedViewModel viewModel;
+    private List<Mobile>mobiles;
+    private int currProductIndex;
     public ProductDetails() {
     }
 
@@ -76,7 +84,19 @@ public class ProductDetails extends Fragment {
             productID = getArguments().getString(PRODUCT_ID);
             inCart = getArguments().getBoolean(IN_CART);
             inWishlist = getArguments().getBoolean(IN_WISHLIST);
-            Log.d("trtrt", " " + inWishlist);
+
+            viewModel= ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
+            viewModel.mobiles.observe(this, mobiles -> {
+                this.mobiles=mobiles;
+                for(int i=0;i<mobiles.size();i++)
+                {
+                    if(mobiles.get(i).getId().equals(productID))
+                    {
+                        currProductIndex=i;
+                        break;
+                    }
+                }
+            });
         }
     }
 
@@ -90,8 +110,6 @@ public class ProductDetails extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initializeViews(view);
-
-
     }
 
     private void initializeViews(View view) {
@@ -120,17 +138,17 @@ public class ProductDetails extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
 
-
-
         if (itemId == R.id.action_add_cart) {
             repository.addToUserList(productID, inWishlist, !inCart);
 
             if (inCart) {
                 inCart = false;
                 item.setIcon(R.drawable.icon_add_cart);
+                mobiles.get(currProductIndex).setInCart(inCart);
             } else {
                 inCart = true;
                 item.setIcon(R.drawable.icon_add_cart_green);
+                mobiles.get(currProductIndex).setInCart(inCart);
             }
             return true;
         } else if (itemId == R.id.action_favourite) {
@@ -139,12 +157,20 @@ public class ProductDetails extends Fragment {
             if (inWishlist) {
                 inWishlist = false;
                 item.setIcon(R.drawable.icon_favourite);
+                mobiles.get(currProductIndex).setInWishlist(inWishlist);
             } else {
                 inWishlist = true;
                 item.setIcon(R.drawable.icon_favourite_green);
+                mobiles.get(currProductIndex).setInWishlist(inWishlist);
             }
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDestroy() {
+        viewModel.sendMobiles(mobiles);
+        super.onDestroy();
     }
 }

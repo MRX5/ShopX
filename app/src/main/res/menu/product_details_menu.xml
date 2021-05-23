@@ -3,13 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
     <item
-        android:id="@+id/action_favourite"
-        android:title="@string/favourite"
-        android:icon="@drawable/icon_favourite"
-        app:showAsAction="always"/>
-    <item
         android:id="@+id/action_add_cart"
         android:title="@string/cart"
         android:icon="@drawable/icon_add_cart"
         app:showAsAction="always"/>
+    <item
+        android:id="@+id/action_favourite"
+        android:title="@string/favourite"
+        android:icon="@drawable/icon_favourite"
+        app:showAsAction="always"/>
+
 </menu>

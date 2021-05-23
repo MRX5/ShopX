@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,7 +27,6 @@ public class MobilesAdapter extends RecyclerView.Adapter<MobilesAdapter.viewHold
     private Context mContext;
     private onItemClickListener listener;
     private Repository repository;
-
     public MobilesAdapter(Context mContext, onItemClickListener listener) {
 
         this.mContext = mContext;
@@ -46,17 +46,16 @@ public class MobilesAdapter extends RecyclerView.Adapter<MobilesAdapter.viewHold
         holder.product_name.setText(mobiles.get(position).getName());
         holder.product_price.setText(mobiles.get(position).getPrice());
         if (mobiles.get(position).isInWishlist()) {
-            holder.fav_btn.setImageDrawable(mContext.getResources().getDrawable(R.drawable.icon_favourite_green, null));
+            holder.fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(),R.drawable.icon_favourite_green,null));
         } else {
-            holder.fav_btn.setImageDrawable(mContext.getResources().getDrawable(R.drawable.icon_favourite, null));
+            holder.fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(),R.drawable.icon_favourite,null));
         }
 
         if (mobiles.get(position).isInCart()) {
-            holder.add_cart_btn.setImageDrawable(mContext.getResources().getDrawable(R.drawable.icon_add_cart_green, null));
+            holder.add_cart_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(),R.drawable.icon_add_cart_green,null));
         } else {
-            holder.add_cart_btn.setImageDrawable(mContext.getResources().getDrawable(R.drawable.icon_add_cart, null));
+            holder.add_cart_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(),R.drawable.icon_add_cart,null));
         }
-
         Glide.with(mContext).load("https://cf2.s3.souqcdn.com/item/2020/12/13/13/21/74/96/9/item_L_132174969_ffac6131feef0.jpg").into(holder.product_image);
     }
 
@@ -92,10 +91,10 @@ public class MobilesAdapter extends RecyclerView.Adapter<MobilesAdapter.viewHold
                 boolean isWish = mobiles.get(getAdapterPosition()).isInWishlist();
                 boolean isCart =mobiles.get(getAdapterPosition()).isInCart();
                 if (isWish) {
-                    fav_btn.setImageDrawable(mContext.getResources().getDrawable(R.drawable.icon_favourite, null));
+                    fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(),R.drawable.icon_favourite,null));
                     mobiles.get(getAdapterPosition()).setInWishlist(false);
                 } else {
-                    fav_btn.setImageDrawable(mContext.getResources().getDrawable(R.drawable.icon_favourite_green, null));
+                    fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(),R.drawable.icon_favourite_green,null));
                     mobiles.get(getAdapterPosition()).setInWishlist(true);
                 }
 
@@ -109,10 +108,10 @@ public class MobilesAdapter extends RecyclerView.Adapter<MobilesAdapter.viewHold
                 boolean isWish = mobiles.get(getAdapterPosition()).isInWishlist();
                 boolean isCart = mobiles.get(getAdapterPosition()).isInCart();
                 if (isCart) {
-                    add_cart_btn.setImageDrawable(mContext.getResources().getDrawable(R.drawable.icon_add_cart, null));
+                    add_cart_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(),R.drawable.icon_add_cart,null));
                     mobiles.get(getAdapterPosition()).setInCart(false);
                 } else {
-                    add_cart_btn.setImageDrawable(mContext.getResources().getDrawable(R.drawable.icon_add_cart_green, null));
+                    add_cart_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(),R.drawable.icon_add_cart_green,null));
                     mobiles.get(getAdapterPosition()).setInCart(true);
                 }
 

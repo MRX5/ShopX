@@ -51,4 +51,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/filter_btn" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/rv_mobiles"
+        app:layout_constraintEnd_toEndOf="@+id/rv_mobiles"
+        app:layout_constraintStart_toStartOf="@+id/rv_mobiles"
+        app:layout_constraintTop_toTopOf="@+id/rv_mobiles" />
 </androidx.constraintlayout.widget.ConstraintLayout>

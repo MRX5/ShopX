@@ -55,9 +55,26 @@ public class Repository {
                     if (task.isSuccessful()) {
                         List<Mobile> mobiles = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            inWishlist(document.getId()).observe(lifecycle, s -> {
-                                boolean wish = (s.equals("true"));
-                                mobiles.add(new Mobile(document.getId(), document.getString("name"), document.getString("price"), wish));
+                            getUserData(document.getId()).observe(lifecycle, s -> {
+                                boolean wish, cart;
+                                if (s == null) {
+                                    wish = false;
+                                    cart = false;
+                                } else {
+                                    try {
+                                        wish = (boolean) s.get("IsWish");
+                                    } catch (Exception ex) {
+                                        wish = false;
+                                    }
+
+                                    try {
+                                        cart = (boolean) s.get("IsCart");
+                                    } catch (Exception ex) {
+                                        cart = false;
+                                    }
+                                }
+
+                                mobiles.add(new Mobile(document.getId(), document.getString("name"), document.getString("price"), wish, cart));
                                 results.setValue(mobiles);
                             });
                         }
@@ -66,43 +83,88 @@ public class Repository {
         return results;
     }
 
-    public LiveData<String> inWishlist(String productId) {
-        MutableLiveData<String> liveData = new MutableLiveData<>();
+
+/*
+    public LiveData<List<Mobile>> RefreshMobiles(List<Mobile> mobiles) {
+        for (Mobile mobile : mobiles) {
+            Log.d("Before", "" + mobile.getId() + ": " + mobile.isInCart() + " " + mobile.isInWishlist());
+        }
+        for ( int i = 0; i < mobiles.size(); i++) {
+            Mobile mobile = mobiles.get(i);
+            getUserData(mobile.getId()).observe(lifecycle, s -> {
+                boolean wish, cart;
+                if (s == null) {
+                    wish = false;
+                    cart = false;
+                } else {
+                    try {
+                        wish = (boolean) s.get("IsWish");
+                    } catch (Exception ex) {
+                        wish = false;
+                    }
+
+                    try {
+                        cart = (boolean) s.get("IsCart");
+                    } catch (Exception ex) {
+                        cart = false;
+                    }
+                }
+
+                Log.d("Inside", "Cart1 : " + cart + ",  wish1 :" + wish);
+
+                mobile.setInCart(cart);
+                mobile.setInWishlist(wish);
+                Log.d("Inside", "Cart2: " + mobile.isInCart() + ",  wish2: " + mobile.isInWishlist());
+            });
+
+            mobiles.get(i).setInCart(mobile.isInCart());
+            mobiles.get(i).setInWishlist(mobile.isInWishlist());
+        }
+
+        for (Mobile mobile : mobiles) {
+            Log.d("After", "" + mobile.getId() + ": " + mobile.isInCart() + " " + mobile.isInWishlist());
+        }
+
+        return new LiveData<List<Mobile>>() {
+            @Override
+            protected void setValue(List<Mobile> value) {
+                super.setValue(mobiles);
+            }
+        };
+    }
+*/
+
+
+    public LiveData<DocumentSnapshot> getUserData(String productId) {
+        MutableLiveData<DocumentSnapshot> liveData = new MutableLiveData<>();
         String userUID = mAuth.getCurrentUser().getUid();
         db.collection("Users")
                 .document(userUID)
-                .collection("Wishlist")
+                .collection("UserList")
                 .document(productId)
                 .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-                            liveData.setValue("true");
-                        } else {
-                            liveData.setValue("false");
-                        }
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        liveData.setValue(documentSnapshot);
+                    } else {
+                        liveData.setValue(null);
                     }
+
                 });
         return liveData;
     }
 
-    public void addToWishlist(String productId, boolean IsWishListed) {
+    public void addToUserList(String productId, boolean IsWishListed, boolean IsInCart) {
         String userUID = mAuth.getCurrentUser().getUid();
 
-        if (IsWishListed) {
-            db.collection("Users").
-                    document(userUID).
-                    collection("Wishlist").document(productId).delete();
-        } else {
-            HashMap<String,Object>mop=new HashMap<>();
-            db.collection("Users").
-                    document(userUID).
-                    collection("Wishlist").document(productId).set(mop);
-        }
-    }
+        Map<String, Boolean> value = new HashMap<>();
+        value.put("IsWish", IsWishListed);
+        value.put("IsCart", IsInCart);
 
-    private void addInCart(String productId) {
+        db.collection("Users").
+                document(userUID).
+                collection("UserList").document(productId).set(value);
 
     }
+
 }

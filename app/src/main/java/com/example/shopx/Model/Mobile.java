@@ -42,11 +42,12 @@ public class Mobile {
     }
 
 
-    public Mobile(String id, String name, String price,boolean inWishlist) {
+    public Mobile(String id, String name, String price,boolean inWishlist,boolean inCart) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.inWishlist=inWishlist;
+        this.inCart=inCart;
     }
 
     public String getImageUrl() {

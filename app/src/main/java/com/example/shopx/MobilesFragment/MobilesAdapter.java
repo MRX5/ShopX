@@ -22,21 +22,22 @@ import com.example.shopx.Model.Mobile;
 import com.example.shopx.Repository;
 
 public class MobilesAdapter extends RecyclerView.Adapter<MobilesAdapter.viewHolder> {
-    private List<Mobile>mobiles;
+    private List<Mobile> mobiles;
     private Context mContext;
     private onItemClickListener listener;
     private Repository repository;
-    public MobilesAdapter(Context mContext, onItemClickListener listener)
-    {
 
-        this.mContext=mContext;
-        this.listener=listener;
-        repository=new Repository();
+    public MobilesAdapter(Context mContext, onItemClickListener listener) {
+
+        this.mContext = mContext;
+        this.listener = listener;
+        repository = new Repository();
     }
+
     @NonNull
     @Override
     public viewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view=LayoutInflater.from(parent.getContext()).inflate(R.layout.product_card_v1,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_card_v1, parent, false);
         return new viewHolder(view);
     }
 
@@ -44,19 +45,24 @@ public class MobilesAdapter extends RecyclerView.Adapter<MobilesAdapter.viewHold
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
         holder.product_name.setText(mobiles.get(position).getName());
         holder.product_price.setText(mobiles.get(position).getPrice());
-        if(mobiles.get(position).isInWishlist()) {
-            holder.fav_btn.setImageDrawable(mContext.getResources().getDrawable(R.drawable.icon_favourite_green,null));
+        if (mobiles.get(position).isInWishlist()) {
+            holder.fav_btn.setImageDrawable(mContext.getResources().getDrawable(R.drawable.icon_favourite_green, null));
+        } else {
+            holder.fav_btn.setImageDrawable(mContext.getResources().getDrawable(R.drawable.icon_favourite, null));
         }
-        else
-        {
-            holder.fav_btn.setImageDrawable(mContext.getResources().getDrawable(R.drawable.icon_favourite,null));
+
+        if (mobiles.get(position).isInCart()) {
+            holder.add_cart_btn.setImageDrawable(mContext.getResources().getDrawable(R.drawable.icon_add_cart_green, null));
+        } else {
+            holder.add_cart_btn.setImageDrawable(mContext.getResources().getDrawable(R.drawable.icon_add_cart, null));
         }
+
         Glide.with(mContext).load("https://cf2.s3.souqcdn.com/item/2020/12/13/13/21/74/96/9/item_L_132174969_ffac6131feef0.jpg").into(holder.product_image);
     }
 
     @Override
     public int getItemCount() {
-        if(mobiles!=null)return mobiles.size();
+        if (mobiles != null) return mobiles.size();
         return 0;
     }
 
@@ -65,53 +71,67 @@ public class MobilesAdapter extends RecyclerView.Adapter<MobilesAdapter.viewHold
         notifyDataSetChanged();
     }
 
-    class viewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
-    {
-        TextView product_name,product_price;
+    class viewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        TextView product_name, product_price;
         ImageView product_image;
         AppCompatImageButton fav_btn;
         AppCompatImageButton add_cart_btn;
+
         public viewHolder(@NonNull View itemView) {
             super(itemView);
-            product_name=itemView.findViewById(R.id.product_name);
-            product_price=itemView.findViewById(R.id.product_price);
-            product_image=itemView.findViewById(R.id.product_image);
+            product_name = itemView.findViewById(R.id.product_name);
+            product_price = itemView.findViewById(R.id.product_price);
+            product_image = itemView.findViewById(R.id.product_image);
 
-            fav_btn=itemView.findViewById(R.id.fav_btn);
+            fav_btn = itemView.findViewById(R.id.fav_btn);
 
-            add_cart_btn=itemView.findViewById(R.id.cart_btn);
+            add_cart_btn = itemView.findViewById(R.id.cart_btn);
 
-            fav_btn.setOnClickListener(v->
+            fav_btn.setOnClickListener(v ->
             {
-                boolean isWish=mobiles.get(getAdapterPosition()).isInWishlist();
-                if (isWish)
-                {
-                    fav_btn.setImageDrawable(mContext.getResources().getDrawable(R.drawable.icon_favourite,null));
+                boolean isWish = mobiles.get(getAdapterPosition()).isInWishlist();
+                boolean isCart =mobiles.get(getAdapterPosition()).isInCart();
+                if (isWish) {
+                    fav_btn.setImageDrawable(mContext.getResources().getDrawable(R.drawable.icon_favourite, null));
                     mobiles.get(getAdapterPosition()).setInWishlist(false);
-                }
-                else
-                {
-                    fav_btn.setImageDrawable(mContext.getResources().getDrawable(R.drawable.icon_favourite_green,null));
+                } else {
+                    fav_btn.setImageDrawable(mContext.getResources().getDrawable(R.drawable.icon_favourite_green, null));
                     mobiles.get(getAdapterPosition()).setInWishlist(true);
                 }
 
-                repository.addToWishlist(mobiles.get(getAdapterPosition()).getId(),
-                        isWish);
+                repository.addToUserList(mobiles.get(getAdapterPosition()).getId(),
+                        !isWish,isCart);
 
-          });
+            });
+
+            add_cart_btn.setOnClickListener(v ->
+            {
+                boolean isWish = mobiles.get(getAdapterPosition()).isInWishlist();
+                boolean isCart = mobiles.get(getAdapterPosition()).isInCart();
+                if (isCart) {
+                    add_cart_btn.setImageDrawable(mContext.getResources().getDrawable(R.drawable.icon_add_cart, null));
+                    mobiles.get(getAdapterPosition()).setInCart(false);
+                } else {
+                    add_cart_btn.setImageDrawable(mContext.getResources().getDrawable(R.drawable.icon_add_cart_green, null));
+                    mobiles.get(getAdapterPosition()).setInCart(true);
+                }
+
+                repository.addToUserList(mobiles.get(getAdapterPosition()).getId(),
+                        isWish,!isCart);
+            });
+
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            int itemId=getAdapterPosition();
-            Mobile mobile=mobiles.get(itemId);
-            listener.onItemClick(mobile.getId());
+            int itemId = getAdapterPosition();
+            Mobile mobile = mobiles.get(itemId);
+            listener.onItemClick(mobile.getId(),mobile.isInWishlist(),mobile.isInCart());
         }
     }
 
-    interface onItemClickListener
-    {
-         void onItemClick(String itemId);
+    interface onItemClickListener {
+        void onItemClick(String itemId,boolean inWishlist,boolean inCart);
     }
 }

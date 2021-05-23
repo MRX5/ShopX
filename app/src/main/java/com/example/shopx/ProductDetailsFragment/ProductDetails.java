@@ -12,6 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,12 +33,15 @@ public class ProductDetails extends Fragment {
 
 
     private static final String PRODUCT_ID = "product_id";
+    private static final String IN_WISHLIST = "in_wishlist";
+    private static final String IN_CART = "in_cart";
+
     private SearchFragment.OnSearchViewClickListener listener;
     private String productID;
-    private boolean signin=false;
-    private boolean inCart=false;
-    private boolean favourite=false;
+    private boolean inCart;
+    private boolean inWishlist;
     private Repository repository;
+
     public ProductDetails() {
     }
 
@@ -52,10 +56,12 @@ public class ProductDetails extends Fragment {
         }
     }
 
-    public static ProductDetails newInstance(String param1) {
+    public static ProductDetails newInstance(String param1, boolean inWishlist, boolean inCart) {
         ProductDetails fragment = new ProductDetails();
         Bundle args = new Bundle();
         args.putString(PRODUCT_ID, param1);
+        args.putBoolean(IN_WISHLIST, inWishlist);
+        args.putBoolean(IN_CART, inCart);
         fragment.setArguments(args);
         return fragment;
     }
@@ -65,9 +71,12 @@ public class ProductDetails extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         listener.showBottomNavigation(false);
-        repository=new Repository();
+        repository = new Repository();
         if (getArguments() != null) {
             productID = getArguments().getString(PRODUCT_ID);
+            inCart = getArguments().getBoolean(IN_CART);
+            inWishlist = getArguments().getBoolean(IN_WISHLIST);
+            Log.d("trtrt", " " + inWishlist);
         }
     }
 
@@ -97,39 +106,42 @@ public class ProductDetails extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.product_details_menu,menu);
+        inflater.inflate(R.menu.product_details_menu, menu);
+        if (inCart)
+            menu.findItem(R.id.action_add_cart).setIcon(R.drawable.icon_add_cart_green);
+
+        if (inWishlist)
+            menu.findItem(R.id.action_favourite).setIcon(R.drawable.icon_favourite_green);
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
 
-        int itemId=item.getItemId();
-        if(itemId==R.id.action_add_cart)
-        {
-            if(inCart)
-            {
-                inCart=false;
+
+
+        if (itemId == R.id.action_add_cart) {
+            repository.addToUserList(productID, inWishlist, !inCart);
+
+            if (inCart) {
+                inCart = false;
                 item.setIcon(R.drawable.icon_add_cart);
-            }
-            else
-            {
-                inCart=true;
+            } else {
+                inCart = true;
                 item.setIcon(R.drawable.icon_add_cart_green);
             }
             return true;
-        }
-        else if(itemId==R.id.action_favourite)
-        {
-            if(favourite)
-            {
-                favourite=false;
+        } else if (itemId == R.id.action_favourite) {
+            repository.addToUserList(productID, !inWishlist, inCart);
+
+            if (inWishlist) {
+                inWishlist = false;
                 item.setIcon(R.drawable.icon_favourite);
-            }
-            else
-            {
-                favourite=true;
-                 item.setIcon(R.drawable.icon_favourite_green);
+            } else {
+                inWishlist = true;
+                item.setIcon(R.drawable.icon_favourite_green);
             }
             return true;
         }

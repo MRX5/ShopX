@@ -1,10 +1,13 @@
 package com.example.shopx;
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -21,11 +24,16 @@ import java.util.Map;
 
 import com.example.shopx.Model.Mobile;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firestore.v1.Document;
 
 public class Repository {
+
+    private final String USER_PRODUCTS="UserProducts";
+    private final String MOBILES="Mobiles";
+    private final String USERS="Users";
+
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
-    boolean favourite = false;
     private LifecycleOwner lifecycle;
 
     public Repository() {
@@ -41,7 +49,7 @@ public class Repository {
 
     public LiveData<List<Mobile>> getMobiles() {
         MutableLiveData<List<Mobile>> results = new MutableLiveData<>();
-        db.collection("Mobiles")
+        db.collection(MOBILES)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -49,13 +57,8 @@ public class Repository {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             // get inWishlist and inCart Products
                             getInWish_and_InCart(document.getId()).observe(lifecycle, s -> {
-                                boolean wish, cart;
-                                if (s == null) {
-                                    wish = false;
-                                    cart = false;
-                                }
-                                else {
-
+                                boolean wish=false, cart=false;
+                                if (s != null) {
                                     try {
                                         wish = (boolean) s.get("IsWish");
                                     } catch (Exception ex) {
@@ -68,7 +71,6 @@ public class Repository {
                                         cart = false;
                                     }
                                 }
-
                                 mobiles.add(new Mobile(document.getId(), document.getString("name"), document.getString("price"), wish, cart));
                                 results.setValue(mobiles);
                             });
@@ -80,9 +82,9 @@ public class Repository {
 
     public LiveData<DocumentSnapshot> getInWish_and_InCart(String productId) {
         MutableLiveData<DocumentSnapshot> liveData = new MutableLiveData<>();String userUID = mAuth.getCurrentUser().getUid();
-        db.collection("Users")
+        db.collection(USERS)
                 .document(userUID)
-                .collection("UserList")
+                .collection(USER_PRODUCTS)
                 .document(productId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -103,10 +105,32 @@ public class Repository {
         value.put("IsWish", IsWishListed);
         value.put("IsCart", IsInCart);
 
-        db.collection("Users").
+        db.collection(USERS).
                 document(userUID).
-                collection("UserList").document(productId).set(value);
+                collection(USER_PRODUCTS).document(productId).set(value);
 
+    }
+
+    public LiveData<List<String>> getWishlist()
+    {
+        MutableLiveData<List<String>> results=new MutableLiveData<>();
+        String curr_user_id=mAuth.getCurrentUser().getUid();
+        db.collection(USERS)
+                .document(curr_user_id)
+                .collection(USER_PRODUCTS)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        List<String> tmp=new ArrayList<>();
+                        for (DocumentSnapshot document:queryDocumentSnapshots.getDocuments())
+                        {
+                            tmp.add(document.getId());
+                        }
+                        results.setValue(tmp);
+                    }
+                });
+        return results;
     }
 
 }

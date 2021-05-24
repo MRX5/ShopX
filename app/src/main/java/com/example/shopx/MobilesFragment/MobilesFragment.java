@@ -37,7 +37,7 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class MobilesFragment extends Fragment implements MobilesAdapter.onItemClickListener {
-
+    
     private SearchView searchView;
     private TextView resultsNumber;
     private RecyclerView recyclerView;

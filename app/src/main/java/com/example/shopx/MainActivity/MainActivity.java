@@ -23,6 +23,7 @@ import com.example.shopx.Repository;
 import com.example.shopx.SignInFragment.SignInFragment;
 import com.example.shopx.R;
 import com.example.shopx.SearchFragment.SearchFragment;
+import com.example.shopx.WishlistFragment.WishlistFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -44,7 +45,9 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         mAuth = FirebaseAuth.getInstance();
+
         if (mAuth.getCurrentUser() == null) {
             Intent intent = new Intent(this, RegisterActivity.class);
             startActivity(intent);
@@ -109,6 +112,13 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.On
             case R.id.action_cart:
                 return true;
             case R.id.action_favourite:
+                if(curr_fragment!=WISHLIST_FRAGMENT)
+                {
+                    curr_fragment=WISHLIST_FRAGMENT;
+                    clearBackStack();
+                    WishlistFragment wishlistFragment=WishlistFragment.newInstance();
+                    loadFragment(wishlistFragment);
+                }
                 return true;
             case R.id.action_profile:
 

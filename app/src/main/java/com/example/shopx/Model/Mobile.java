@@ -41,7 +41,7 @@ public class Mobile {
         this.id = id;
     }
 
-
+    public Mobile(){}
     public Mobile(String id, String name, String price,boolean inWishlist,boolean inCart) {
         this.id = id;
         this.name = name;

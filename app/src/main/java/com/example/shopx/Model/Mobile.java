@@ -10,8 +10,7 @@ public class Mobile {
     private boolean inWishlist;
     private boolean inCart;
 
-    public Mobile() {
-    }
+    public Mobile() { }
 
     public Mobile(String id, String name, String price, String category, boolean inWishlist, boolean inCart) {
         this.id = id;

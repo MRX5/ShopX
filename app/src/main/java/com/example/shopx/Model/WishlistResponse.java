@@ -4,9 +4,6 @@ public class WishlistResponse {
     private String productId;
     private String category;
 
-    public String getProductId() {
-        return productId;
-    }
 
     public WishlistResponse(String productId, String category) {
         this.productId = productId;
@@ -16,6 +13,8 @@ public class WishlistResponse {
     public void setProductId(String productId) {
         this.productId = productId;
     }
+
+    public String getProductId() { return productId; }
 
     public String getCategory() {
         return category;

@@ -6,11 +6,13 @@ public class Wishlist {
     private String image_url;
     private String price;
     private String category;
-    public String getCategory() {
-        return category;
-    }
 
-    public void setCategory(String category) {
+    public Wishlist(){}
+    public Wishlist(String productId, String name, String productImage, String price, String category) {
+        this.productId = productId;
+        this.name = name;
+        this.image_url = productImage;
+        this.price = price;
         this.category = category;
     }
 
@@ -20,15 +22,6 @@ public class Wishlist {
 
     public void setProductId(String productId) {
         this.productId = productId;
-    }
-
-    public Wishlist(){}
-    public Wishlist(String productId, String name, String productImage, String price, String category) {
-        this.productId = productId;
-        this.name = name;
-        this.image_url = productImage;
-        this.price = price;
-        this.category = category;
     }
 
     public String getName() {
@@ -53,5 +46,13 @@ public class Wishlist {
 
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

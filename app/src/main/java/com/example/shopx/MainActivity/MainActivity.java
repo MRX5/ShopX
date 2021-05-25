@@ -24,6 +24,7 @@ import com.example.shopx.SignInFragment.SignInFragment;
 import com.example.shopx.R;
 import com.example.shopx.SearchFragment.SearchFragment;
 import com.example.shopx.WishlistFragment.WishlistFragment;
+import com.example.shopx.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 

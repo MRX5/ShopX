@@ -22,6 +22,7 @@ public class SharedViewModel extends ViewModel {
         mobiles=new MutableLiveData<>();
         mobiles.setValue(results);
     }
+
     public void cleanMemory()
     {
         mobiles=null;

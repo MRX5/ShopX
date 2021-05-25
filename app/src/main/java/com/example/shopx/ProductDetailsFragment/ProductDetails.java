@@ -1,20 +1,15 @@
 package com.example.shopx.ProductDetailsFragment;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.Icon;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -41,12 +36,17 @@ public class ProductDetails extends Fragment {
     private static final String PRODUCT_ID = "product_id";
     private static final String IN_WISHLIST = "in_wishlist";
     private static final String IN_CART = "in_cart";
+    private static final String CATEGORY="category";
 
     private SearchFragment.OnSearchViewClickListener listener;
+
     private String productID;
     private boolean inCart;
     private boolean inWishlist;
+    private String category;
+
     private Repository repository;
+
     private SharedViewModel viewModel;
     private List<Mobile>mobiles;
     private int currProductIndex;
@@ -64,12 +64,13 @@ public class ProductDetails extends Fragment {
         }
     }
 
-    public static ProductDetails newInstance(String param1, boolean inWishlist, boolean inCart) {
+    public static ProductDetails newInstance(String param1, boolean inWishlist, boolean inCart,String category) {
         ProductDetails fragment = new ProductDetails();
         Bundle args = new Bundle();
         args.putString(PRODUCT_ID, param1);
         args.putBoolean(IN_WISHLIST, inWishlist);
         args.putBoolean(IN_CART, inCart);
+        args.putString(CATEGORY,category);
         fragment.setArguments(args);
         return fragment;
     }
@@ -78,12 +79,17 @@ public class ProductDetails extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
         listener.showBottomNavigation(false);
+
         repository = new Repository();
+
         if (getArguments() != null) {
+
             productID = getArguments().getString(PRODUCT_ID);
             inCart = getArguments().getBoolean(IN_CART);
             inWishlist = getArguments().getBoolean(IN_WISHLIST);
+            category=getArguments().getString(CATEGORY);
 
             viewModel= ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
             viewModel.mobiles.observe(this, mobiles -> {
@@ -139,7 +145,7 @@ public class ProductDetails extends Fragment {
         int itemId = item.getItemId();
 
         if (itemId == R.id.action_add_cart) {
-            repository.addToUserList(productID, inWishlist, !inCart);
+            repository.addToUserProducts(productID, inWishlist, !inCart,category);
 
             if (inCart) {
                 inCart = false;
@@ -152,7 +158,7 @@ public class ProductDetails extends Fragment {
             }
             return true;
         } else if (itemId == R.id.action_favourite) {
-            repository.addToUserList(productID, !inWishlist, inCart);
+            repository.addToUserProducts(productID, !inWishlist, inCart,category);
 
             if (inWishlist) {
                 inWishlist = false;

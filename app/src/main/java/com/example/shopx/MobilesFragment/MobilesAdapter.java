@@ -1,7 +1,6 @@
 package com.example.shopx.MobilesFragment;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -90,6 +88,7 @@ public class MobilesAdapter extends RecyclerView.Adapter<MobilesAdapter.viewHold
             {
                 boolean isWish = mobiles.get(getAdapterPosition()).isInWishlist();
                 boolean isCart =mobiles.get(getAdapterPosition()).isInCart();
+                String category=mobiles.get(getAdapterPosition()).getCategory();
                 if (isWish) {
                     fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(),R.drawable.icon_favourite,null));
                     mobiles.get(getAdapterPosition()).setInWishlist(false);
@@ -98,8 +97,8 @@ public class MobilesAdapter extends RecyclerView.Adapter<MobilesAdapter.viewHold
                     mobiles.get(getAdapterPosition()).setInWishlist(true);
                 }
 
-                repository.addToUserList(mobiles.get(getAdapterPosition()).getId(),
-                        !isWish,isCart);
+                repository.addToUserProducts(mobiles.get(getAdapterPosition()).getId(),
+                        !isWish,isCart,category);
 
             });
 
@@ -107,6 +106,7 @@ public class MobilesAdapter extends RecyclerView.Adapter<MobilesAdapter.viewHold
             {
                 boolean isWish = mobiles.get(getAdapterPosition()).isInWishlist();
                 boolean isCart = mobiles.get(getAdapterPosition()).isInCart();
+                String category=mobiles.get(getAdapterPosition()).getCategory();
                 if (isCart) {
                     add_cart_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(),R.drawable.icon_add_cart,null));
                     mobiles.get(getAdapterPosition()).setInCart(false);
@@ -115,8 +115,8 @@ public class MobilesAdapter extends RecyclerView.Adapter<MobilesAdapter.viewHold
                     mobiles.get(getAdapterPosition()).setInCart(true);
                 }
 
-                repository.addToUserList(mobiles.get(getAdapterPosition()).getId(),
-                        isWish,!isCart);
+                repository.addToUserProducts(mobiles.get(getAdapterPosition()).getId(),
+                        isWish,!isCart,category);
             });
 
             itemView.setOnClickListener(this);
@@ -126,11 +126,11 @@ public class MobilesAdapter extends RecyclerView.Adapter<MobilesAdapter.viewHold
         public void onClick(View v) {
             int itemId = getAdapterPosition();
             Mobile mobile = mobiles.get(itemId);
-            listener.onItemClick(mobile.getId(),mobile.isInWishlist(),mobile.isInCart());
+            listener.onItemClick(mobile.getId(),mobile.isInWishlist(),mobile.isInCart(),mobile.getCategory());
         }
     }
 
     interface onItemClickListener {
-        void onItemClick(String itemId,boolean inWishlist,boolean inCart);
+        void onItemClick(String itemId,boolean inWishlist,boolean inCart,String category);
     }
 }

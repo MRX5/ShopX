@@ -37,7 +37,7 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class MobilesFragment extends Fragment implements MobilesAdapter.onItemClickListener {
-    
+
     private SearchView searchView;
     private TextView resultsNumber;
     private RecyclerView recyclerView;
@@ -127,8 +127,8 @@ public class MobilesFragment extends Fragment implements MobilesAdapter.onItemCl
 
 
     @Override
-    public void onItemClick(String itemId, boolean inWishlist, boolean inCart) {
-        ProductDetails fragment = ProductDetails.newInstance(itemId, inWishlist, inCart);
+    public void onItemClick(String itemId, boolean inWishlist, boolean inCart,String category) {
+        ProductDetails fragment = ProductDetails.newInstance(itemId, inWishlist, inCart,category);
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_container, fragment)
                 .addToBackStack(null)

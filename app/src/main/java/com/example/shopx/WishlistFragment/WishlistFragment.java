@@ -15,11 +15,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.shopx.Model.Wishlist;
 import com.example.shopx.R;
 import com.example.shopx.Repository;
 
+import java.util.ArrayList;
+import java.util.List;
 
-public class WishlistFragment extends Fragment {
+
+public class WishlistFragment extends Fragment implements WishlistAdapter.onFavouriteIconClickListener{
 
     private RecyclerView recyclerView;
     private WishlistAdapter adapter;
@@ -37,7 +41,7 @@ public class WishlistFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter=new WishlistAdapter();
+        adapter=new WishlistAdapter(this);
         repository=new Repository();
     }
 
@@ -69,13 +73,26 @@ public class WishlistFragment extends Fragment {
     }
 
     private void loadWishlist() {
-        repository.getMobiles().observe(this,items->
+        List<Wishlist>favouriteList=new ArrayList<>();
+        repository.getWishlist().observe(this,items->
         {
+            Log.d("aaa", ""+ items.size());
             for(int i=0;i<items.size();i++)
             {
-                Log.d("mmm", items.get(i).getId());
+                repository.getProduct(items.get(i).getCategory(),items.get(i).getProductId())
+                .observe(this, product -> {
+                    favouriteList.add(product);
+                    if(favouriteList.size()==items.size())  // when all responses complete -> set items
+                    {
+                        adapter.setItems(favouriteList);
+                    }
+                });
             }
         });
     }
 
+    @Override
+    public void onIconClick(Wishlist product) {
+        repository.removeFormWishlist(product);
+    }
 }

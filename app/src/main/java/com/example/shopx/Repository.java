@@ -2,19 +2,15 @@ package com.example.shopx;
 
 import android.util.Log;
 
-import androidx.annotation.Nullable;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.example.shopx.Model.Wishlist;
+import com.example.shopx.Model.WishlistResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -23,14 +19,15 @@ import java.util.List;
 import java.util.Map;
 
 import com.example.shopx.Model.Mobile;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firestore.v1.Document;
 
 public class Repository {
 
     private final String USER_PRODUCTS="UserProducts";
     private final String MOBILES="Mobiles";
     private final String USERS="Users";
+    private final String IN_WISHLIST="InWish";
+    private final String IN_CART="InCart";
+    private final String CATEGORY="category";
 
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
@@ -60,18 +57,18 @@ public class Repository {
                                 boolean wish=false, cart=false;
                                 if (s != null) {
                                     try {
-                                        wish = (boolean) s.get("IsWish");
+                                        wish = (boolean) s.get(IN_WISHLIST);
                                     } catch (Exception ex) {
                                         wish = false;
                                     }
 
                                     try {
-                                        cart = (boolean) s.get("IsCart");
+                                        cart = (boolean) s.get(IN_CART);
                                     } catch (Exception ex) {
                                         cart = false;
                                     }
                                 }
-                                mobiles.add(new Mobile(document.getId(), document.getString("name"), document.getString("price"), wish, cart));
+                                mobiles.add(new Mobile(document.getId(), document.getString("name"), document.getString("price"), document.getString("category"), wish, cart));
                                 results.setValue(mobiles);
                             });
                         }
@@ -98,12 +95,13 @@ public class Repository {
         return liveData;
     }
 
-    public void addToUserList(String productId, boolean IsWishListed, boolean IsInCart) {
+    public void addToUserProducts(String productId, boolean IsWishListed, boolean IsInCart,String category) {
         String userUID = mAuth.getCurrentUser().getUid();
 
-        Map<String, Boolean> value = new HashMap<>();
-        value.put("IsWish", IsWishListed);
-        value.put("IsCart", IsInCart);
+        Map<String, Object> value = new HashMap<>();
+        value.put(IN_WISHLIST, IsWishListed);
+        value.put(IN_CART, IsInCart);
+        value.put(CATEGORY,category);
 
         db.collection(USERS).
                 document(userUID).
@@ -111,26 +109,49 @@ public class Repository {
 
     }
 
-    public LiveData<List<String>> getWishlist()
-    {
-        MutableLiveData<List<String>> results=new MutableLiveData<>();
+    public LiveData<List<WishlistResponse>> getWishlist() {
+        MutableLiveData<List<WishlistResponse>> results=new MutableLiveData<>();
         String curr_user_id=mAuth.getCurrentUser().getUid();
         db.collection(USERS)
                 .document(curr_user_id)
                 .collection(USER_PRODUCTS)
+                .whereEqualTo(IN_WISHLIST,true)
                 .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        List<String> tmp=new ArrayList<>();
-                        for (DocumentSnapshot document:queryDocumentSnapshots.getDocuments())
-                        {
-                            tmp.add(document.getId());
-                        }
-                        results.setValue(tmp);
+                .addOnCompleteListener(task -> {
+                    List<WishlistResponse> response=new ArrayList<>();
+                    for (DocumentSnapshot document:task.getResult())
+                    {
+                        response.add(new WishlistResponse(document.getId(),document.getString("category")));
                     }
+                    results.setValue(response);
                 });
         return results;
     }
 
+    public LiveData<Wishlist> getProduct(String category,String productId) {
+
+        MutableLiveData<Wishlist>product=new MutableLiveData<>();
+
+        db.collection(category)
+                .document(productId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    Wishlist wishlist=task.getResult().toObject(Wishlist.class);
+                    wishlist.setProductId(task.getResult().getId());
+                    product.setValue(wishlist);
+                });
+        return product;
+    }
+
+    public void removeFormWishlist(Wishlist product)
+    {
+        String curr_user_id=mAuth.getCurrentUser().getUid();
+        HashMap<String,Object>data=new HashMap<>();
+        data.put(IN_WISHLIST,false);
+        db.collection(USERS)
+                .document(curr_user_id)
+                .collection(USER_PRODUCTS)
+                .document(product.getProductId())
+                .update(data);
+    }
 }

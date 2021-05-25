@@ -6,8 +6,29 @@ public class Mobile {
     private String price;
     private String imageUrl;
     private String description;
+    private String category;
     private boolean inWishlist;
     private boolean inCart;
+
+    public Mobile() {
+    }
+
+    public Mobile(String id, String name, String price, String category, boolean inWishlist, boolean inCart) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.category = category;
+        this.inWishlist = inWishlist;
+        this.inCart = inCart;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
     public String getDescription() {
         return description;
@@ -39,15 +60,6 @@ public class Mobile {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public Mobile(){}
-    public Mobile(String id, String name, String price,boolean inWishlist,boolean inCart) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.inWishlist=inWishlist;
-        this.inCart=inCart;
     }
 
     public String getImageUrl() {

@@ -10,14 +10,20 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.shopx.Model.Mobile;
 import com.example.shopx.Model.Wishlist;
 import com.example.shopx.R;
+import com.example.shopx.Repository;
 
 import java.util.List;
 
 public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.viewHolder> {
     private List<Wishlist> items;
-
+     private onFavouriteIconClickListener listener;
+    public WishlistAdapter(onFavouriteIconClickListener listener)
+    {
+        this.listener=listener;
+    }
     @NonNull
     @Override
     public viewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -27,8 +33,13 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.viewHo
 
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
-        holder.productName.setText(items.get(position).getProductName());
-        holder.productPrice.setText(items.get(position).getProductPrice());
+        holder.productName.setText(items.get(position).getName());
+        holder.productPrice.setText(items.get(position).getPrice());
+    }
+
+    public void setItems(List<Wishlist> items) {
+        this.items = items;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -53,8 +64,15 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.viewHo
             productPrice = itemView.findViewById(R.id.product_price);
             favBtn.setOnClickListener(v->
             {
-
+                int position=getAdapterPosition();
+                listener.onIconClick(items.get(position));
+                items.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position,items.size());
             });
         }
+    }
+    interface onFavouriteIconClickListener{
+        void onIconClick(Wishlist product);
     }
 }

@@ -1,11 +1,11 @@
 package com.example.shopx.Model;
 
-public class WishlistResponse {
+public class myResponse {
     private String productId;
     private String category;
 
 
-    public WishlistResponse(String productId, String category) {
+    public myResponse(String productId, String category) {
         this.productId = productId;
         this.category = category;
     }

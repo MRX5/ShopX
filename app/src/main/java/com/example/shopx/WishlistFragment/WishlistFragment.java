@@ -8,9 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +16,7 @@ import android.view.ViewGroup;
 import com.example.shopx.Model.Wishlist;
 import com.example.shopx.R;
 import com.example.shopx.Repository;
+import com.example.shopx.databinding.FragmentWishlistBinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +24,9 @@ import java.util.List;
 
 public class WishlistFragment extends Fragment implements WishlistAdapter.onFavouriteIconClickListener{
 
-    private RecyclerView recyclerView;
     private WishlistAdapter adapter;
     private Repository repository;
+    private FragmentWishlistBinding binding;
 
     public WishlistFragment() {
         // Required empty public constructor
@@ -48,42 +47,43 @@ public class WishlistFragment extends Fragment implements WishlistAdapter.onFavo
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_wishlist, container, false);
+        binding=FragmentWishlistBinding.inflate(inflater,container,false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        initializeViews(view);
+        initializeViews();
 
         loadWishlist();
 
     }
 
-    private void initializeViews(View view) {
-        Toolbar toolbar = view.findViewById(R.id.my_toolbar);
+    private void initializeViews() {
+        Toolbar toolbar = binding.myToolbar.getRoot();
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.wishlist));
 
-        recyclerView = view.findViewById(R.id.rv_wishlist);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(adapter);
+        binding.rvWishlist.setLayoutManager(new LinearLayoutManager(getActivity()));
+        binding.rvWishlist.setAdapter(adapter);
     }
 
     private void loadWishlist() {
+        binding.progressBar.setVisibility(View.VISIBLE);
         List<Wishlist>favouriteList=new ArrayList<>();
         repository.getWishlist().observe(this,items->
         {
-            Log.d("aaa", ""+ items.size());
             for(int i=0;i<items.size();i++)
             {
-                repository.getProduct(items.get(i).getCategory(),items.get(i).getProductId())
+                repository.getWishlistProduct(items.get(i).getCategory(),items.get(i).getProductId())
                 .observe(this, product -> {
                     favouriteList.add(product);
-                    if(favouriteList.size()==items.size())  // when all responses complete -> set items
+                    if(favouriteList.size()==items.size())  // when all responses received -> set items
                     {
+                        binding.progressBar.setVisibility(View.GONE);
                         adapter.setItems(favouriteList);
                     }
                 });

@@ -130,7 +130,7 @@ public class MobilesAdapter extends RecyclerView.Adapter<MobilesAdapter.viewHold
         }
     }
 
-    interface onItemClickListener {
+    public interface onItemClickListener {
         void onItemClick(String itemId,boolean inWishlist,boolean inCart,String category);
     }
 }

@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.shopx.R;
-import com.example.shopx.Repository;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,7 +22,7 @@ import com.example.shopx.Repository;
  */
 public class SearchFragment extends Fragment implements SearchView.OnQueryTextListener {
 
-    OnSearchViewClickListener listener;
+    BottomNavigationListener listener;
     private SearchView searchView;
     private AppCompatButton cancelBtn;
 
@@ -39,9 +38,9 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if(context instanceof OnSearchViewClickListener)
+        if(context instanceof BottomNavigationListener)
         {
-            listener=(OnSearchViewClickListener)context;
+            listener=(BottomNavigationListener)context;
         }
         else
         {
@@ -86,7 +85,7 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
         return false;
     }
 
-    public interface OnSearchViewClickListener {
+    public interface BottomNavigationListener {
         void showBottomNavigation(boolean state);
     }
 }

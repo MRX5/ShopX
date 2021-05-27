@@ -22,6 +22,7 @@ import com.example.shopx.Model.Mobile;
 import com.example.shopx.R;
 import com.example.shopx.Repository;
 import com.example.shopx.SearchFragment.SearchFragment;
+import com.example.shopx.databinding.FragmentProductDetailsBinding;
 
 import java.util.List;
 
@@ -32,13 +33,13 @@ import java.util.List;
  */
 public class ProductDetails extends Fragment {
 
-
+    private FragmentProductDetailsBinding binding;
     private static final String PRODUCT_ID = "product_id";
     private static final String IN_WISHLIST = "in_wishlist";
     private static final String IN_CART = "in_cart";
-    private static final String CATEGORY="category";
+    private static final String CATEGORY = "category";
 
-    private SearchFragment.OnSearchViewClickListener listener;
+    private SearchFragment.BottomNavigationListener listener;
 
     private String productID;
     private boolean inCart;
@@ -48,29 +49,32 @@ public class ProductDetails extends Fragment {
     private Repository repository;
 
     private SharedViewModel viewModel;
-    private List<Mobile>mobiles;
+
+    private List<Mobile> mobiles;
+
     private int currProductIndex;
+
     public ProductDetails() {
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof SearchFragment.OnSearchViewClickListener) {
-            listener = (SearchFragment.OnSearchViewClickListener) context;
+        if (context instanceof SearchFragment.BottomNavigationListener) {
+            listener = (SearchFragment.BottomNavigationListener) context;
         } else {
             throw new ClassCastException(context.toString()
                     + " must implement searchProductListener");
         }
     }
 
-    public static ProductDetails newInstance(String param1, boolean inWishlist, boolean inCart,String category) {
+    public static ProductDetails newInstance(String param1, boolean inWishlist, boolean inCart, String category) {
         ProductDetails fragment = new ProductDetails();
         Bundle args = new Bundle();
         args.putString(PRODUCT_ID, param1);
         args.putBoolean(IN_WISHLIST, inWishlist);
         args.putBoolean(IN_CART, inCart);
-        args.putString(CATEGORY,category);
+        args.putString(CATEGORY, category);
         fragment.setArguments(args);
         return fragment;
     }
@@ -84,48 +88,54 @@ public class ProductDetails extends Fragment {
 
         repository = new Repository();
 
-        if (getArguments() != null) {
+        viewModel = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
 
+        if (getArguments() != null) {
             productID = getArguments().getString(PRODUCT_ID);
             inCart = getArguments().getBoolean(IN_CART);
             inWishlist = getArguments().getBoolean(IN_WISHLIST);
-            category=getArguments().getString(CATEGORY);
-
-            viewModel= ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
-            viewModel.mobiles.observe(this, mobiles -> {
-                this.mobiles=mobiles;
-                for(int i=0;i<mobiles.size();i++)
-                {
-                    if(mobiles.get(i).getId().equals(productID))
-                    {
-                        currProductIndex=i;
-                        break;
-                    }
-                }
-            });
+            category = getArguments().getString(CATEGORY);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_product_details, container, false);
+        binding = FragmentProductDetailsBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initializeViews(view);
+
+        initializeToolbar();
+
+        updateUi();
     }
 
-    private void initializeViews(View view) {
-
-        Toolbar toolbar = view.findViewById(R.id.my_toolbar);
+    private void initializeToolbar() {
+        Toolbar toolbar = binding.myToolbar.getRoot();
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setElevation(0);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back_arrow);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+    }
+
+    private void updateUi() {
+        viewModel.mobiles.observe(this, mobiles -> {
+            this.mobiles = mobiles;
+
+            for (int i = 0; i < mobiles.size(); i++) {
+                if (mobiles.get(i).getId().equals(productID)) {
+                    currProductIndex = i;
+                    binding.productName.setText(mobiles.get(currProductIndex).getName());
+                    binding.productPrice.setText(mobiles.get(currProductIndex).getPrice());
+                    break;
+                }
+            }
+        });
     }
 
     @Override
@@ -145,7 +155,7 @@ public class ProductDetails extends Fragment {
         int itemId = item.getItemId();
 
         if (itemId == R.id.action_add_cart) {
-            repository.addToUserProducts(productID, inWishlist, !inCart,category);
+            repository.addToUserProducts(productID, inWishlist, !inCart, category);
 
             if (inCart) {
                 inCart = false;
@@ -158,7 +168,7 @@ public class ProductDetails extends Fragment {
             }
             return true;
         } else if (itemId == R.id.action_favourite) {
-            repository.addToUserProducts(productID, !inWishlist, inCart,category);
+            repository.addToUserProducts(productID, !inWishlist, inCart, category);
 
             if (inWishlist) {
                 inWishlist = false;

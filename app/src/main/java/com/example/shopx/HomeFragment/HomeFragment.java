@@ -8,6 +8,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,9 +18,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.shopx.MobilesFragment.MobilesAdapter;
 import com.example.shopx.MobilesFragment.MobilesFragment;
 import com.example.shopx.R;
+import com.example.shopx.Repository;
 import com.example.shopx.SearchFragment.SearchFragment;
+import com.example.shopx.databinding.FragmentHomeBinding;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,18 +31,11 @@ import com.example.shopx.SearchFragment.SearchFragment;
  * create an instance of this fragment.
  *
  */
-public class HomeFragment extends Fragment implements View.OnClickListener {
+public class HomeFragment extends Fragment implements View.OnClickListener,MobilesAdapter.onItemClickListener{
 
-    private SearchView searchView;
-    private CardView category_mobiles;
-    private CardView category_laptops;
-    private CardView category_fashion;
-    private CardView category_home;
-    private CardView category_beauty;
-    private RecyclerView rv_best_deals;
-    private RecyclerView rv_mobiles;
-    private TextView seeMoreCategories;
-
+    private FragmentHomeBinding binding;
+    private Repository repository;
+    private MobilesAdapter adapter;
 
     public static HomeFragment newInstance() {
         HomeFragment fragment = new HomeFragment();
@@ -54,41 +51,38 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        adapter=new MobilesAdapter(getContext(),this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_home, container, false);
+       binding=FragmentHomeBinding.inflate(inflater,container,false);
+       repository=new Repository(getViewLifecycleOwner());
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        searchView=view.findViewById(R.id.home_search_view);
-        category_mobiles=view.findViewById(R.id.category_mobiles);
-        category_laptops=view.findViewById(R.id.category_laptops);
-        category_fashion=view.findViewById(R.id.category_fashion);
-        category_home=view.findViewById(R.id.category_home);
-        category_beauty=view.findViewById(R.id.category_beauty);
-        seeMoreCategories=view.findViewById(R.id.category_see_more);
-        rv_best_deals=view.findViewById(R.id.rv_best_deals);
-        rv_mobiles=view.findViewById(R.id.rv_mobiles);
         setupBestDealsRecycler();
         setupMobilesRecycler();
-        searchView.setOnClickListener(this);
-        category_mobiles.setOnClickListener(this);
+        binding.homeSearchView.setOnClickListener(this);
+        binding.categories.categoryMobiles.setOnClickListener(this);
     }
 
 
     private void setupBestDealsRecycler() {
-        rv_best_deals.setHasFixedSize(true);
-        rv_best_deals.setLayoutManager(new LinearLayoutManager(getActivity()));
+        binding.rvBestDeals.setHasFixedSize(true);
+        binding.rvBestDeals.setLayoutManager(new LinearLayoutManager(getActivity()));
+        binding.rvBestDeals.setNestedScrollingEnabled(false);
 
     }
     private void setupMobilesRecycler() {
-        rv_mobiles.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rv_mobiles.setHasFixedSize(true);
+        binding.rvMobiles.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
+        binding.rvMobiles.setHasFixedSize(true);
+        binding.rvMobiles.setAdapter(adapter);
+        binding.rvMobiles.setNestedScrollingEnabled(false);
+        repository.getMobiles().observe(this,mobiles ->adapter.setMobiles(mobiles));
     }
 
     @Override
@@ -132,4 +126,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         ft.commit();
     }
 
+    @Override
+    public void onItemClick(String itemId, boolean inWishlist, boolean inCart, String category) {
+
+    }
 }

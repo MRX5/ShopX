@@ -110,12 +110,11 @@ public class MobilesFragment extends Fragment implements MobilesAdapter.onItemCl
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, GridSpacingItemDecoration.dpToPx(getContext(), 12), true));
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, GridSpacingItemDecoration.dpToPx(getContext(), 2), true));
         recyclerView.setAdapter(adapter);
     }
 
     private void loadMobiles() {
-
             progressBar.setVisibility(View.VISIBLE);
             repository.getMobiles().observe(this, mobiles -> {
                 progressBar.setVisibility(View.GONE);

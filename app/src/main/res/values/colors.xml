@@ -14,4 +14,5 @@
     <color name="price">#0089f6</color>
     <color name="yellow">#F4B400</color>
     <color name="green">#3DDC84</color>
+    <color name="gray_divider">#eeeeee</color>
 </resources>

@@ -1,28 +1,44 @@
 package com.example.shopx.Model;
 
-public class Wishlist {
-    private String productId;
+public class ProductInfo {
+    private String id;
     private String name;
     private String image_url;
     private String price;
     private String category;
+    private boolean InCart;
+    private boolean InWish;
 
-    public Wishlist(){}
+    public boolean isInCart() {
+        return InCart;
+    }
 
-    public Wishlist(String productId, String name, String productImage, String price, String category) {
-        this.productId = productId;
+    public void setInCart(boolean inCart) {
+        InCart = inCart;
+    }
+
+    public boolean isInWish() {
+        return InWish;
+    }
+
+    public void setInWish(boolean inWish) {
+        InWish = inWish;
+    }
+
+    public ProductInfo(){}
+
+    public ProductInfo(String name, String image_url, String price) {
         this.name = name;
-        this.image_url = productImage;
+        this.image_url = image_url;
         this.price = price;
-        this.category = category;
     }
 
-    public String getProductId() {
-        return productId;
+    public String getId() {
+        return id;
     }
 
-    public void setProductId(String productId) {
-        this.productId = productId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {

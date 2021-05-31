@@ -10,6 +10,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,7 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.shopx.MainActivity.SharedViewModel;
-import com.example.shopx.Model.Mobile;
+import com.example.shopx.Model.Product;
+import com.example.shopx.Model.ProductInfo;
 import com.example.shopx.R;
 import com.example.shopx.Repository;
 import com.example.shopx.SearchFragment.SearchFragment;
@@ -33,25 +35,16 @@ import java.util.List;
  */
 public class ProductDetails extends Fragment {
 
+    private final static String CATEGORY = "category";
+    private final static String PRODUCT_ID = "product_id";
+    private String productCategory;
+    private String productId;
     private FragmentProductDetailsBinding binding;
-    private static final String PRODUCT_ID = "product_id";
-    private static final String IN_WISHLIST = "in_wishlist";
-    private static final String IN_CART = "in_cart";
-    private static final String CATEGORY = "category";
-
     private SearchFragment.BottomNavigationListener listener;
-
-    private String productID;
-    private boolean inCart;
-    private boolean inWishlist;
-    private String category;
-
     private Repository repository;
-
     private SharedViewModel viewModel;
-
-    private List<Mobile> mobiles;
-
+    private List<ProductInfo> products;
+    private Product product;
     private int currProductIndex;
 
     public ProductDetails() {
@@ -68,12 +61,10 @@ public class ProductDetails extends Fragment {
         }
     }
 
-    public static ProductDetails newInstance(String param1, boolean inWishlist, boolean inCart, String category) {
+    public static ProductDetails newInstance(String productId, String category) {
         ProductDetails fragment = new ProductDetails();
         Bundle args = new Bundle();
-        args.putString(PRODUCT_ID, param1);
-        args.putBoolean(IN_WISHLIST, inWishlist);
-        args.putBoolean(IN_CART, inCart);
+        args.putString(PRODUCT_ID, productId);
         args.putString(CATEGORY, category);
         fragment.setArguments(args);
         return fragment;
@@ -82,7 +73,9 @@ public class ProductDetails extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+
+        productId = getArguments().getString(PRODUCT_ID);
+        productCategory = getArguments().getString(CATEGORY);
 
         listener.showBottomNavigation(false);
 
@@ -90,17 +83,13 @@ public class ProductDetails extends Fragment {
 
         viewModel = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
 
-        if (getArguments() != null) {
-            productID = getArguments().getString(PRODUCT_ID);
-            inCart = getArguments().getBoolean(IN_CART);
-            inWishlist = getArguments().getBoolean(IN_WISHLIST);
-            category = getArguments().getString(CATEGORY);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        getProduct();
+
         binding = FragmentProductDetailsBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -108,10 +97,8 @@ public class ProductDetails extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         initializeToolbar();
-
-        updateUi();
+        binding.contentScrollView.setVisibility(View.INVISIBLE);
     }
 
     private void initializeToolbar() {
@@ -123,28 +110,52 @@ public class ProductDetails extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
-    private void updateUi() {
-        viewModel.mobiles.observe(this, mobiles -> {
-            this.mobiles = mobiles;
-
-            for (int i = 0; i < mobiles.size(); i++) {
-                if (mobiles.get(i).getId().equals(productID)) {
+    private void getCurrProductIndex() {
+        viewModel.mobiles.observe(this, products -> {
+            this.products = products;
+            for (int i = 0; i < products.size(); i++) {
+                if (products.get(i).getId().equals(product.getId())) {
                     currProductIndex = i;
-                    binding.productName.setText(mobiles.get(currProductIndex).getName());
-                    binding.productPrice.setText(mobiles.get(currProductIndex).getPrice());
                     break;
                 }
             }
         });
     }
 
+    private void getProduct() {
+        repository.getProduct(productCategory,productId).observe(this,product -> {
+            repository.getInWish_and_InCart(productId).observe(this,response->{
+                product.setInCart(response.isInCart());
+                product.setInWishlist(response.isInWish());
+                this.product=product;
+                updateUi();
+            });
+        });
+    }
+
+    private void updateUi() {
+        Log.d("aaa", "updateUi: ");
+
+        setHasOptionsMenu(true);
+        binding.productName.setText(product.getName());
+        binding.productPrice.setText(product.getPrice());
+        binding.productDescription.setText(product.getDescription());
+
+        binding.progressBar.setVisibility(View.GONE);
+        binding.contentScrollView.setVisibility(View.VISIBLE);
+
+        if (viewModel.mobiles != null) {
+            getCurrProductIndex();
+        }
+    }
+
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.product_details_menu, menu);
-        if (inCart)
+        if (product.isInCart())
             menu.findItem(R.id.action_add_cart).setIcon(R.drawable.icon_add_cart_green);
 
-        if (inWishlist)
+        if (product.isInWishlist())
             menu.findItem(R.id.action_favourite).setIcon(R.drawable.icon_favourite_green);
 
         super.onCreateOptionsMenu(menu, inflater);
@@ -155,29 +166,29 @@ public class ProductDetails extends Fragment {
         int itemId = item.getItemId();
 
         if (itemId == R.id.action_add_cart) {
-            repository.addToUserProducts(productID, inWishlist, !inCart, category);
+            repository.addToUserProducts(product.getId(), product.isInWishlist(), !product.isInCart(), product.getCategory());
 
-            if (inCart) {
-                inCart = false;
+            if (product.isInCart()) {
+                product.setInCart(false);
                 item.setIcon(R.drawable.icon_add_cart);
-                mobiles.get(currProductIndex).setInCart(inCart);
+                product.setInCart(product.isInCart());
             } else {
-                inCart = true;
+                product.setInCart(true);
                 item.setIcon(R.drawable.icon_add_cart_green);
-                mobiles.get(currProductIndex).setInCart(inCart);
+                product.setInCart(product.isInCart());
             }
             return true;
         } else if (itemId == R.id.action_favourite) {
-            repository.addToUserProducts(productID, !inWishlist, inCart, category);
+            repository.addToUserProducts(product.getId(), !product.isInWishlist(), product.isInCart(), product.getCategory());
 
-            if (inWishlist) {
-                inWishlist = false;
+            if (product.isInWishlist()) {
+                product.setInWishlist(false);
                 item.setIcon(R.drawable.icon_favourite);
-                mobiles.get(currProductIndex).setInWishlist(inWishlist);
+                product.setInWishlist(product.isInWishlist());
             } else {
-                inWishlist = true;
+                product.setInWishlist(true);
                 item.setIcon(R.drawable.icon_favourite_green);
-                mobiles.get(currProductIndex).setInWishlist(inWishlist);
+                product.setInWishlist(product.isInWishlist());
             }
             return true;
         }
@@ -186,7 +197,11 @@ public class ProductDetails extends Fragment {
 
     @Override
     public void onDestroy() {
-        viewModel.sendMobiles(mobiles);
+        if (products != null) {
+            products.get(currProductIndex).setInWish(product.isInWishlist());
+            products.get(currProductIndex).setInCart(product.isInCart());
+            viewModel.sendMobiles(products);
+        }
         super.onDestroy();
     }
 }

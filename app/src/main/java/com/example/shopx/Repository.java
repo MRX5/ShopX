@@ -6,8 +6,8 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.shopx.Model.Cart;
-import com.example.shopx.Model.Wishlist;
+import com.example.shopx.Model.ProductInfo;
+import com.example.shopx.Model.UserResponse;
 import com.example.shopx.Model.myResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -19,16 +19,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.example.shopx.Model.Mobile;
+import com.example.shopx.Model.Product;
+import com.google.firebase.firestore.auth.User;
 
 public class Repository {
 
+
     private final String USER_PRODUCTS = "UserProducts";
     private final String MOBILES = "Mobiles";
+    private static final String LAPTOPS = "Laptops";
     private final String USERS = "Users";
     private final String IN_WISHLIST = "InWish";
     private final String IN_CART = "InCart";
     private final String CATEGORY = "category";
+    private final String CATEGORIES = "Categories";
+    private final String PRODUCTS = "Products";
 
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
@@ -45,32 +50,28 @@ public class Repository {
         db = FirebaseFirestore.getInstance();
     }
 
-    public LiveData<List<Mobile>> getMobiles() {
-        MutableLiveData<List<Mobile>> results = new MutableLiveData<>();
-        db.collection(MOBILES)
+    public LiveData<List<ProductInfo>> getProducts(String category) {
+        MutableLiveData<List<ProductInfo>> results = new MutableLiveData<>();
+        db.collection(CATEGORIES)
+                .document(category)
+                .collection(PRODUCTS)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        List<Mobile> mobiles = new ArrayList<>();
+                        List<ProductInfo> products = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             // get inWishlist and inCart Products
-                            getInWish_and_InCart(document.getId()).observe(lifecycle, s -> {
-                                boolean wish = false, cart = false;
-                                if (s != null) {
-                                    try {
-                                        wish = (boolean) s.get(IN_WISHLIST);
-                                    } catch (Exception ex) {
-                                        wish = false;
-                                    }
-
-                                    try {
-                                        cart = (boolean) s.get(IN_CART);
-                                    } catch (Exception ex) {
-                                        cart = false;
-                                    }
+                            getInWish_and_InCart(document.getId()).observe(lifecycle, response -> {
+                                boolean wish = response.isInWish();
+                                boolean cart = response.isInCart();
+                                ProductInfo product = document.toObject(ProductInfo.class);
+                                product.setId(document.getId());
+                                product.setInWish(wish);
+                                product.setInCart(cart);
+                                products.add(product);
+                                if (products.size() == task.getResult().size()) {
+                                    results.setValue(products);
                                 }
-                                mobiles.add(new Mobile(document.getId(), document.getString("name"), document.getString("price"), document.getString("category"), wish, cart));
-                                results.setValue(mobiles);
                             });
                         }
                     }
@@ -78,8 +79,8 @@ public class Repository {
         return results;
     }
 
-    public LiveData<DocumentSnapshot> getInWish_and_InCart(String productId) {
-        MutableLiveData<DocumentSnapshot> liveData = new MutableLiveData<>();
+    public LiveData<UserResponse> getInWish_and_InCart(String productId) {
+        MutableLiveData<UserResponse> liveData = new MutableLiveData<>();
         String userUID = mAuth.getCurrentUser().getUid();
         db.collection(USERS)
                 .document(userUID)
@@ -87,12 +88,29 @@ public class Repository {
                 .document(productId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        liveData.setValue(documentSnapshot);
-                    } else {
-                        liveData.setValue(null);
-                    }
+                    boolean wish, cart;
+                    if (documentSnapshot != null) {
+                        try {
+                            wish = (boolean) documentSnapshot.get(IN_WISHLIST);
+                        } catch (Exception ex) {
+                            wish = false;
+                        }
 
+                        try {
+                            cart = (boolean) documentSnapshot.get(IN_CART);
+                        } catch (Exception ex) {
+                            cart = false;
+                        }
+                        UserResponse response = new UserResponse();
+                        response.setInCart(cart);
+                        response.setInWish(wish);
+                        liveData.setValue(response);
+                    } else {
+                        UserResponse response = new UserResponse();
+                        response.setInCart(false);
+                        response.setInWish(false);
+                        liveData.setValue(response);
+                    }
                 });
         return liveData;
     }
@@ -122,24 +140,26 @@ public class Repository {
                 .addOnCompleteListener(task -> {
                     List<myResponse> response = new ArrayList<>();
                     for (DocumentSnapshot document : task.getResult()) {
-                        response.add(new myResponse(document.getId(), document.getString("category")));
+                        response.add(new myResponse(document.getId(), document.getString(CATEGORY))); // id - category
                     }
                     results.setValue(response);
                 });
         return results;
     }
 
-    public LiveData<Wishlist> getWishlistProduct(String category, String productId) {
+    public LiveData<ProductInfo> getWishlistProduct(String category, String productId) {
 
-        MutableLiveData<Wishlist> product = new MutableLiveData<>();
+        MutableLiveData<ProductInfo> product = new MutableLiveData<>();
 
-        db.collection(category)
+        db.collection(CATEGORIES)
+                .document(category)
+                .collection(PRODUCTS)
                 .document(productId)
                 .get()
                 .addOnCompleteListener(task -> {
-                    Wishlist wishlist = task.getResult().toObject(Wishlist.class);
-                    wishlist.setProductId(task.getResult().getId());
-                    product.setValue(wishlist);
+                    ProductInfo productInfo = task.getResult().toObject(ProductInfo.class);
+                    productInfo.setId(task.getResult().getId());
+                    product.setValue(productInfo);
                 });
         return product;
     }
@@ -155,40 +175,42 @@ public class Repository {
                 .addOnCompleteListener(task -> {
                     List<myResponse> response = new ArrayList<>();
                     for (DocumentSnapshot document : task.getResult()) {
-                        response.add(new myResponse(document.getId(), document.getString("category")));
+                        response.add(new myResponse(document.getId(), document.getString(CATEGORY)));
                     }
                     results.setValue(response);
                 });
         return results;
     }
 
-    public LiveData<Cart> getCartProduct(String category, String productId) {
+    public LiveData<ProductInfo> getCartProduct(String category, String productId) {
 
-        MutableLiveData<Cart> product = new MutableLiveData<>();
+        MutableLiveData<ProductInfo> product = new MutableLiveData<>();
 
-        db.collection(category)
+        db.collection(CATEGORIES)
+                .document(category)
+                .collection(PRODUCTS)
                 .document(productId)
                 .get()
                 .addOnCompleteListener(task -> {
-                    Cart result = task.getResult().toObject(Cart.class);
+                    ProductInfo result = task.getResult().toObject(ProductInfo.class);
                     result.setId(task.getResult().getId());
                     product.setValue(result);
                 });
         return product;
     }
 
-    public void removeFormWishlist(Wishlist product) {
+    public void removeFormWishlist(ProductInfo product) {
         String curr_user_id = mAuth.getCurrentUser().getUid();
         HashMap<String, Object> data = new HashMap<>();
         data.put(IN_WISHLIST, false);
         db.collection(USERS)
                 .document(curr_user_id)
                 .collection(USER_PRODUCTS)
-                .document(product.getProductId())
+                .document(product.getId())
                 .update(data);
     }
 
-    public void removeFormCart(Cart product) {
+    public void removeFormCart(ProductInfo product) {
         String curr_user_id = mAuth.getCurrentUser().getUid();
         HashMap<String, Object> data = new HashMap<>();
         data.put(IN_CART, false);
@@ -197,5 +219,63 @@ public class Repository {
                 .collection(USER_PRODUCTS)
                 .document(product.getId())
                 .update(data);
+    }
+
+    public LiveData<List<ProductInfo>> searchForProduct() {
+        MutableLiveData<List<ProductInfo>> results = new MutableLiveData<>();
+        db.collectionGroup(PRODUCTS)
+                .get()
+                .addOnCompleteListener(task -> {
+                    List<ProductInfo> responses = new ArrayList<>();
+
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        ProductInfo info = document.toObject(ProductInfo.class);
+                        info.setId(document.getId());
+                        responses.add(info);
+                    }
+                    results.setValue(responses);
+                });
+        return results;
+    }
+
+    public LiveData<Product> getProduct(String category, String productId) {
+        MutableLiveData<Product> product = new MutableLiveData<>();
+        db.collection(CATEGORIES)
+                .document(category)
+                .collection(PRODUCTS)
+                .document(productId)
+                .get()
+                .addOnCompleteListener(task -> {
+
+                    Product result = task.getResult().toObject(Product.class);
+                    result.setId(productId);
+                    product.setValue(result);
+                });
+
+        return product;
+    }
+
+    public LiveData<UserResponse> query(String productId) {
+        MutableLiveData<UserResponse> result = new MutableLiveData<>();
+
+        db.collection(USERS)
+                .document(mAuth.getCurrentUser().getUid())
+                .collection(USER_PRODUCTS)
+                .document(productId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    UserResponse response;
+                    if(task.getResult().exists())
+                    {
+                        response = task.getResult().toObject(UserResponse.class);
+                    }
+                    else {
+                        response=new UserResponse();
+                        response.setInWish(false);
+                        response.setInCart(false);
+                    }
+                    result.setValue(response);
+                });
+        return result;
     }
 }

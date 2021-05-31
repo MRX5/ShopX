@@ -13,7 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.shopx.Model.Wishlist;
+import com.example.shopx.Model.ProductInfo;
 import com.example.shopx.R;
 import com.example.shopx.Repository;
 import com.example.shopx.databinding.FragmentWishlistBinding;
@@ -73,7 +73,7 @@ public class WishlistFragment extends Fragment implements WishlistAdapter.onFavo
 
     private void loadWishlist() {
         binding.progressBar.setVisibility(View.VISIBLE);
-        List<Wishlist>favouriteList=new ArrayList<>();
+        List<ProductInfo>favouriteList=new ArrayList<>();
         repository.getWishlist().observe(this,items->
         {
             for(int i=0;i<items.size();i++)
@@ -92,7 +92,7 @@ public class WishlistFragment extends Fragment implements WishlistAdapter.onFavo
     }
 
     @Override
-    public void onIconClick(Wishlist product) {
+    public void onIconClick(ProductInfo product) {
         repository.removeFormWishlist(product);
     }
 }

@@ -10,15 +10,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.shopx.Model.Mobile;
-import com.example.shopx.Model.Wishlist;
+import com.example.shopx.Model.ProductInfo;
 import com.example.shopx.R;
-import com.example.shopx.Repository;
 
 import java.util.List;
 
 public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.viewHolder> {
-    private List<Wishlist> items;
+    private List<ProductInfo> items;
      private onFavouriteIconClickListener listener;
     public WishlistAdapter(onFavouriteIconClickListener listener)
     {
@@ -37,7 +35,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.viewHo
         holder.productPrice.setText(items.get(position).getPrice());
     }
 
-    public void setItems(List<Wishlist> items) {
+    public void setItems(List<ProductInfo> items) {
         this.items = items;
         notifyDataSetChanged();
     }
@@ -73,6 +71,6 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.viewHo
         }
     }
     interface onFavouriteIconClickListener{
-        void onIconClick(Wishlist product);
+        void onIconClick(ProductInfo product);
     }
 }

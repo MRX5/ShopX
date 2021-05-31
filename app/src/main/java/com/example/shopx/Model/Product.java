@@ -1,6 +1,6 @@
 package com.example.shopx.Model;
 
-public class Mobile {
+public class Product {
     private String id;
     private String name;
     private String price;
@@ -10,9 +10,9 @@ public class Mobile {
     private boolean inWishlist;
     private boolean inCart;
 
-    public Mobile() { }
+    public Product() { }
 
-    public Mobile(String id, String name, String price, String category, boolean inWishlist, boolean inCart) {
+    public Product(String id, String name, String price, String category, boolean inWishlist, boolean inCart) {
         this.id = id;
         this.name = name;
         this.price = price;

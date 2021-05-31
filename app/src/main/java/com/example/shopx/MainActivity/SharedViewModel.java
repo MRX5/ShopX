@@ -1,23 +1,17 @@
 package com.example.shopx.MainActivity;
 
-import android.util.Log;
-import android.view.View;
-
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
-import com.example.shopx.Model.Mobile;
-import com.example.shopx.Repository;
+import com.example.shopx.Model.Product;
+import com.example.shopx.Model.ProductInfo;
 
 import java.util.List;
 
 public class SharedViewModel extends ViewModel {
 
-    public MutableLiveData<List<Mobile>> mobiles=null;
-
-    public void sendMobiles(List<Mobile>results)
+    public MutableLiveData<List<ProductInfo>> mobiles=null;
+    public void sendMobiles(List<ProductInfo>results)
     {
         mobiles=new MutableLiveData<>();
         mobiles.setValue(results);

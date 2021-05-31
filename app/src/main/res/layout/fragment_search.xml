@@ -8,15 +8,36 @@
     android:orientation="vertical"
     tools:context=".SearchFragment.SearchFragment">
 
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/filter_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/icon_filter2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_view" />
+
+    <TextView
+        android:id="@+id/results_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/header_text"
+        android:textSize="16sp"
+        android:layout_marginStart="16dp"
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="@+id/filter_btn"
+        app:layout_constraintBottom_toBottomOf="@+id/filter_btn"
+        app:layout_constraintStart_toEndOf="@+id/filter_btn" />
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search_view"
         android:layout_height="wrap_content"
         android:layout_width="250dp"
         android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
         android:layout_marginEnd="8dp"
+        android:elevation="1dp"
         android:background="@drawable/search_view_round"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/cancel_btn"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,12 +60,12 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_search_results"
-        android:layout_marginTop="16dp"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_view" />
+        app:layout_constraintTop_toBottomOf="@+id/filter_btn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

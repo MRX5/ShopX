@@ -11,16 +11,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.shopx.Model.Cart;
-import com.example.shopx.Model.Wishlist;
+import com.example.shopx.Model.ProductInfo;
 import com.example.shopx.R;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.viewHolder> {
-    private List<Cart> items;
+    private List<ProductInfo> items;
     private CartAdapterInterface listener;
     private double totalPrice=0;
     public CartAdapter(CartAdapterInterface listener)
@@ -40,10 +37,10 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.viewHolder> {
         holder.bind(items.get(position));
     }
 
-    public void setItems(List<Cart> items) {
+    public void setItems(List<ProductInfo> items) {
         this.items = items;
         notifyDataSetChanged();
-        for (Cart item:items)
+        for (ProductInfo item:items)
         {
             totalPrice+=Double.parseDouble(item.getPrice());
         }
@@ -86,7 +83,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.viewHolder> {
             remove_btn.setOnClickListener(this);
         }
 
-        public void bind(Cart product)
+        public void bind(ProductInfo product)
         {
             productName.setText(product.getName());
             productPrice.setText(product.getPrice());
@@ -133,7 +130,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.viewHolder> {
     }
 
     interface CartAdapterInterface{
-        void onRemoveIconClick(Cart product);
+        void onRemoveIconClick(ProductInfo product);
         void getTotalPrice(double total);
     }
 }

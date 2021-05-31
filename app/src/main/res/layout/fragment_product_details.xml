@@ -6,36 +6,50 @@
     android:layout_height="match_parent"
     tools:context=".ProductDetailsFragment.ProductDetails">
 
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
     <include
         android:id="@+id/my_toolbar"
-        layout="@layout/my_toolbar"/>
+        layout="@layout/my_toolbar" />
 
     <ScrollView
+        android:id="@+id/content_scroll_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/my_toolbar">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        <FrameLayout
-            android:id="@+id/frameLayout"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:id="@+id/product_image"
-                android:layout_width="150dp"
-                android:layout_height="170dp"
-                android:layout_gravity="center"
-                android:src="@drawable/placeholder" />
+            <FrameLayout
+                android:id="@+id/frameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        </FrameLayout>
+                <ImageView
+                    android:id="@+id/product_image"
+                    android:layout_width="150dp"
+                    android:layout_height="170dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/placeholder" />
+
+            </FrameLayout>
 
             <TextView
                 android:id="@+id/product_name"
@@ -54,10 +68,10 @@
                 android:id="@+id/product_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
                 android:fontFamily="@font/gilroy_bold"
                 android:text="10,700"
                 android:textColor="@color/price"
-                android:layout_marginEnd="4dp"
                 android:textSize="16sp"
                 app:layout_constraintBaseline_toBaselineOf="@+id/product_name"
                 app:layout_constraintEnd_toStartOf="@+id/textView" />
@@ -77,37 +91,61 @@
 
             <RatingBar
                 android:id="@+id/ratingBar"
-                android:theme="@style/RatingBar"
                 style="@style/Widget.AppCompat.RatingBar.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:numStars="5"
                 android:rating="4"
+                android:theme="@style/RatingBar"
                 app:layout_constraintStart_toStartOf="@+id/product_name"
                 app:layout_constraintTop_toBottomOf="@+id/product_name" />
 
             <TextView
+                android:id="@+id/textView15"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:text="4.1"
-                android:textStyle="bold"
                 android:textColor="@color/header_text"
                 android:textSize="14sp"
-                android:layout_marginStart="8dp"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/ratingBar"
                 app:layout_constraintStart_toEndOf="@+id/ratingBar"
                 app:layout_constraintTop_toTopOf="@+id/ratingBar" />
 
-            <include
-                layout="@layout/mobile_specifications"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
                 android:layout_margin="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ratingBar" />
+                android:background="@color/browser_actions_divider_color"
+                app:layout_constraintTop_toBottomOf="@+id/ratingBar"
+                tools:layout_editor_absoluteX="95dp" />
+
+            <TextView
+                android:id="@+id/textView16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/gilroy"
+                android:text="@string/description"
+                android:textColor="@color/header_text"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/ratingBar"
+                app:layout_constraintTop_toBottomOf="@+id/view" />
+
+            <TextView
+                android:id="@+id/product_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="Apple Iphone 8 Plus With Facetime - 256 GB, 4G LTE, Red, 3 GB Ram f f f f "
+                app:layout_constraintEnd_toEndOf="@+id/view"
+                app:layout_constraintStart_toStartOf="@+id/textView16"
+                app:layout_constraintTop_toBottomOf="@+id/textView16" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

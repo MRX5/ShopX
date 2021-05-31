@@ -10,12 +10,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.shopx.Model.Cart;
+import com.example.shopx.Model.ProductInfo;
 import com.example.shopx.R;
 import com.example.shopx.Repository;
 import com.example.shopx.SearchFragment.SearchFragment;
@@ -82,11 +81,12 @@ public class CartFragment extends Fragment implements CartAdapter.CartAdapterInt
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.cart));
         binding.rvCart.setLayoutManager(new LinearLayoutManager(getActivity()));
         binding.rvCart.setAdapter(adapter);
+        binding.rvCart.setHasFixedSize(true);
     }
 
     private void loadCart() {
         binding.progressBar.setVisibility(View.VISIBLE);
-        List<Cart> cartList = new ArrayList<>();
+        List<ProductInfo> cartList = new ArrayList<>();
         repository.getCartList().observe(this, items ->
         {
             for (int i = 0; i < items.size(); i++) {
@@ -104,7 +104,7 @@ public class CartFragment extends Fragment implements CartAdapter.CartAdapterInt
     }
 
     @Override
-    public void onRemoveIconClick(Cart product) {
+    public void onRemoveIconClick(ProductInfo product) {
         repository.removeFormCart(product);
     }
 

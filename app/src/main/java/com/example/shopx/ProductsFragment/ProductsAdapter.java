@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageButton;
@@ -25,6 +26,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.viewHo
     private Context mContext;
     private onItemClickListener listener;
     private Repository repository;
+
     public ProductsAdapter(Context mContext, onItemClickListener listener) {
 
         this.mContext = mContext;
@@ -44,15 +46,15 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.viewHo
         holder.product_name.setText(products.get(position).getName());
         holder.product_price.setText(products.get(position).getPrice());
         if (products.get(position).isInWish()) {
-            holder.fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(),R.drawable.icon_favourite_green,null));
+            holder.fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.icon_favourite_green, null));
         } else {
-            holder.fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(),R.drawable.icon_favourite,null));
+            holder.fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.icon_favourite, null));
         }
 
         if (products.get(position).isInCart()) {
-            holder.add_cart_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(),R.drawable.icon_add_cart_green,null));
+            holder.add_cart_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.icon_add_cart_green, null));
         } else {
-            holder.add_cart_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(),R.drawable.icon_add_cart,null));
+            holder.add_cart_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.icon_add_cart, null));
         }
         Glide.with(mContext).load("https://cf2.s3.souqcdn.com/item/2020/12/13/13/21/74/96/9/item_L_132174969_ffac6131feef0.jpg").into(holder.product_image);
     }
@@ -86,37 +88,46 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.viewHo
 
             fav_btn.setOnClickListener(v ->
             {
-                boolean isWish = products.get(getAdapterPosition()).isInWish();
-                boolean isCart = products.get(getAdapterPosition()).isInCart();
-                String category= products.get(getAdapterPosition()).getCategory();
+                int position = getAdapterPosition();
+                boolean isWish = products.get(position).isInWish();
+                boolean isCart = products.get(position).isInCart();
+                String category = products.get(position).getCategory();
                 if (isWish) {
-                    fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(),R.drawable.icon_favourite,null));
-                    products.get(getAdapterPosition()).setInWish(false);
+                    fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.icon_favourite, null));
+                    products.get(position).setInWish(false);
+                    Toast.makeText(mContext, "Product removed from wishlist", Toast.LENGTH_SHORT).show();
                 } else {
-                    fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(),R.drawable.icon_favourite_green,null));
-                    products.get(getAdapterPosition()).setInWish(true);
+                    fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.icon_favourite_green, null));
+                    products.get(position).setInWish(true);
+                    Toast.makeText(mContext, "Product added to wishlist", Toast.LENGTH_SHORT).show();
                 }
 
-                repository.addToUserProducts(products.get(getAdapterPosition()).getId(),
-                        !isWish,isCart,category);
+                listener.onButtonClick(products.get(position).getId(), !isWish, isCart);
+                repository.addToUserProducts(products.get(position).getId(),
+                        !isWish, isCart, category);
 
             });
 
             add_cart_btn.setOnClickListener(v ->
             {
-                boolean isWish = products.get(getAdapterPosition()).isInWish();
-                boolean isCart = products.get(getAdapterPosition()).isInCart();
-                String category= products.get(getAdapterPosition()).getCategory();
+                int position = getAdapterPosition();
+                boolean isWish = products.get(position).isInWish();
+                boolean isCart = products.get(position).isInCart();
+                String category = products.get(position).getCategory();
                 if (isCart) {
-                    add_cart_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(),R.drawable.icon_add_cart,null));
-                    products.get(getAdapterPosition()).setInCart(false);
-                } else {
-                    add_cart_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(),R.drawable.icon_add_cart_green,null));
-                    products.get(getAdapterPosition()).setInCart(true);
-                }
+                    add_cart_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.icon_add_cart, null));
+                    products.get(position).setInCart(false);
+                    Toast.makeText(mContext,"Product removed from cart",Toast.LENGTH_SHORT).show();
 
-                repository.addToUserProducts(products.get(getAdapterPosition()).getId(),
-                        isWish,!isCart,category);
+                } else {
+                    add_cart_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.icon_add_cart_green, null));
+                    products.get(position).setInCart(true);
+                    Toast.makeText(mContext,"Product added to cart",Toast.LENGTH_SHORT).show();
+
+                }
+                listener.onButtonClick(products.get(position).getId(), isWish, !isCart);
+                repository.addToUserProducts(products.get(position).getId(),
+                        isWish, !isCart, category);
             });
 
             itemView.setOnClickListener(this);
@@ -132,5 +143,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.viewHo
 
     public interface onItemClickListener {
         void onItemClick(ProductInfo product);
+
+        void onButtonClick(String productId, boolean inWish, boolean inCart);
     }
 }

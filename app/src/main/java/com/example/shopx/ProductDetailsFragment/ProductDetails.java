@@ -28,11 +28,7 @@ import com.example.shopx.databinding.FragmentProductDetailsBinding;
 
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ProductDetails#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class ProductDetails extends Fragment {
 
     private final static String CATEGORY = "category";
@@ -44,6 +40,8 @@ public class ProductDetails extends Fragment {
     private Repository repository;
     private SharedViewModel viewModel;
     private List<ProductInfo> products;
+    private List<ProductInfo> mobiles;
+    private boolean flag=false;
     private Product product;
     private int currProductIndex;
 
@@ -86,8 +84,7 @@ public class ProductDetails extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         getProduct();
 
         binding = FragmentProductDetailsBinding.inflate(inflater, container, false);
@@ -97,6 +94,8 @@ public class ProductDetails extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        viewModel.mobiles.observe(this,mobiles-> this.mobiles=mobiles);
         initializeToolbar();
         binding.contentScrollView.setVisibility(View.INVISIBLE);
     }
@@ -111,7 +110,7 @@ public class ProductDetails extends Fragment {
     }
 
     private void getCurrProductIndex() {
-        viewModel.mobiles.observe(this, products -> {
+        viewModel.products.observe(this, products -> {
             this.products = products;
             for (int i = 0; i < products.size(); i++) {
                 if (products.get(i).getId().equals(product.getId())) {
@@ -134,8 +133,6 @@ public class ProductDetails extends Fragment {
     }
 
     private void updateUi() {
-        Log.d("aaa", "updateUi: ");
-
         setHasOptionsMenu(true);
         binding.productName.setText(product.getName());
         binding.productPrice.setText(product.getPrice());
@@ -144,7 +141,7 @@ public class ProductDetails extends Fragment {
         binding.progressBar.setVisibility(View.GONE);
         binding.contentScrollView.setVisibility(View.VISIBLE);
 
-        if (viewModel.mobiles != null) {
+        if (viewModel.products != null) {
             getCurrProductIndex();
         }
     }
@@ -167,6 +164,7 @@ public class ProductDetails extends Fragment {
 
         if (itemId == R.id.action_add_cart) {
             repository.addToUserProducts(product.getId(), product.isInWishlist(), !product.isInCart(), product.getCategory());
+            updateMobilesList(product.getId(),product.isInWishlist(),!product.isInCart());
 
             if (product.isInCart()) {
                 product.setInCart(false);
@@ -180,7 +178,7 @@ public class ProductDetails extends Fragment {
             return true;
         } else if (itemId == R.id.action_favourite) {
             repository.addToUserProducts(product.getId(), !product.isInWishlist(), product.isInCart(), product.getCategory());
-
+            updateMobilesList(product.getId(),!product.isInWishlist(),product.isInCart());
             if (product.isInWishlist()) {
                 product.setInWishlist(false);
                 item.setIcon(R.drawable.icon_favourite);
@@ -195,12 +193,29 @@ public class ProductDetails extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    private void updateMobilesList(String id, boolean inWish, boolean inCart) {
+
+        for (int i = 0; i < mobiles.size(); i++) {
+            if (id.equals(mobiles.get(i).getId())) {
+                mobiles.get(i).setInWish(inWish);
+                mobiles.get(i).setInCart(inCart);
+                viewModel.sendMobiles(mobiles);
+                flag=true;
+                break;
+            }
+        }
+    }
+
     @Override
     public void onDestroy() {
         if (products != null) {
             products.get(currProductIndex).setInWish(product.isInWishlist());
             products.get(currProductIndex).setInCart(product.isInCart());
-            viewModel.sendMobiles(products);
+            viewModel.sendProducts(products);
+        }
+        if(!flag)
+        {
+            viewModel.sendMobiles(mobiles);
         }
         super.onDestroy();
     }

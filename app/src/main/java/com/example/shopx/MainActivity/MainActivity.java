@@ -100,8 +100,8 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Bo
                 if (curr_fragment != HOME_FRAGMENT) {
                     curr_fragment=HOME_FRAGMENT;
                     clearBackStack();
-                    HomeFragment homeFragment = HomeFragment.newInstance();
-                    loadFragment(homeFragment);
+                    /*HomeFragment homeFragment = HomeFragment.newInstance();
+                    loadFragment(homeFragment);*/
                 }
                 return true;
             case R.id.action_categories:
@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Bo
 
     public void clearBackStack()
     {
-        for(int i=0;i<fragmentManager.getBackStackEntryCount();i++)
+        for(int i=0;i<fragmentManager.getBackStackEntryCount()-1;i++)
             fragmentManager.popBackStack();
     }
 }

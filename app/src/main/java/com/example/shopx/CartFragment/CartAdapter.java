@@ -44,7 +44,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.viewHolder> {
         {
             totalPrice+=Double.parseDouble(item.getPrice());
         }
-        Log.d("aaa", "setItems: ");
         listener.getTotalPrice(totalPrice);
     }
 

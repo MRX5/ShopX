@@ -18,7 +18,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.shopx.MainActivity.SharedViewModel;
-import com.example.shopx.Model.Product;
 import com.example.shopx.Model.ProductInfo;
 import com.example.shopx.ProductDetailsFragment.ProductDetails;
 import com.example.shopx.R;
@@ -27,19 +26,24 @@ import com.example.shopx.SearchFragment.SearchFragment;
 import com.example.shopx.Utils.GridSpacingItemDecoration;
 import com.example.shopx.databinding.FragmentProductsBinding;
 
+import java.util.List;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ProductsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class ProductsFragment extends Fragment implements ProductsAdapter.onItemClickListener {
-    private final static String CATEGORY="category";
+    private final static String CATEGORY = "category";
 
     private FragmentProductsBinding binding;
     private ProductsAdapter adapter;
     private Repository repository;
     private SharedViewModel viewModel;
+    private List<ProductInfo> mobiles;
+    private boolean flag = false;
     private String category;
+
     public ProductsFragment() {
         // Required empty public constructor
     }
@@ -47,8 +51,8 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.onItem
 
     public static ProductsFragment newInstance(String category) {
         ProductsFragment fragment = new ProductsFragment();
-        Bundle args=new Bundle();
-        args.putString(CATEGORY,category);
+        Bundle args = new Bundle();
+        args.putString(CATEGORY, category);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,11 +60,10 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.onItem
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle bundle=getArguments();
-        category=bundle.getString(CATEGORY);
+        Bundle bundle = getArguments();
+        category = bundle.getString(CATEGORY);
         viewModel = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
         adapter = new ProductsAdapter(getContext(), this);
-
     }
 
     @Override
@@ -68,7 +71,7 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.onItem
                              Bundle savedInstanceState) {
 
         repository = new Repository(getViewLifecycleOwner());
-        binding=FragmentProductsBinding.inflate(inflater,container,false);
+        binding = FragmentProductsBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
@@ -76,17 +79,17 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.onItem
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        initializeViews();
 
-        initializeViews(view);
+        viewModel.mobiles.observe(this, mobiles -> this.mobiles = mobiles);
 
-        if(viewModel.mobiles!=null)  // load mobiles from viewModel
+        if (viewModel.products != null)  // load mobiles from viewModel
         {
-            viewModel.mobiles.observe(this, mobiles -> {
+            viewModel.products.observe(this, mobiles -> {
                 adapter.setProducts(mobiles);
                 binding.resultsNumber.setText("Filter " + mobiles.size() + " results");
             });
-        }
-        else {
+        } else {
             loadMobiles();         // load mobiles from Firestore
         }
 
@@ -94,33 +97,33 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.onItem
 
     }
 
-    private void initializeViews(View view) {
+    private void initializeViews() {
         Toolbar toolbar = binding.myToolbar.getRoot();
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(category);
 
         binding.homeSearchView.setOnClickListener(v -> {
-            SearchFragment fragment=SearchFragment.newInstance();
+            SearchFragment fragment = SearchFragment.newInstance();
             loadFragment(fragment);
         });
 
-        binding.filterBtn.setOnClickListener(v->{
+        binding.filterBtn.setOnClickListener(v -> {
             openDialog();
         });
     }
 
     private void openDialog() {
-        AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final View dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.custom_dialog, null);
         builder.setView(dialogView);
         builder.create().show();
-        Button btn1=dialogView.findViewById(R.id.btn1);
-        Button btn2=dialogView.findViewById(R.id.btn2);
-        btn1.setOnClickListener(v->
-                Toast.makeText(getActivity(),category,Toast.LENGTH_SHORT).show());
-        btn2.setOnClickListener(v->
-                Toast.makeText(getActivity(),"btn2",Toast.LENGTH_SHORT).show());
+        Button btn1 = dialogView.findViewById(R.id.btn1);
+        Button btn2 = dialogView.findViewById(R.id.btn2);
+        btn1.setOnClickListener(v ->
+                Toast.makeText(getActivity(), category, Toast.LENGTH_SHORT).show());
+        btn2.setOnClickListener(v ->
+                Toast.makeText(getActivity(), "btn2", Toast.LENGTH_SHORT).show());
 
     }
 
@@ -133,32 +136,48 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.onItem
     }
 
     private void loadMobiles() {
-            binding.progressBar.setVisibility(View.VISIBLE);
-            repository.getProducts(category).observe(this, products -> {
-                binding.progressBar.setVisibility(View.GONE);
-                adapter.setProducts(products);
-                viewModel.sendMobiles(products);
-                binding.resultsNumber.setText("Filter " + products.size() + " results");
-            });
+        binding.progressBar.setVisibility(View.VISIBLE);
+        repository.getProducts(category).observe(this, products -> {
+            binding.progressBar.setVisibility(View.GONE);
+            adapter.setProducts(products);
+            viewModel.sendProducts(products);
+            binding.resultsNumber.setText("Filter " + products.size() + " results");
+        });
     }
 
 
     @Override
     public void onItemClick(ProductInfo product) {
-        ProductDetails fragment = ProductDetails.newInstance(product.getId(),product.getCategory());
+        ProductDetails fragment = ProductDetails.newInstance(product.getId(), product.getCategory());
         loadFragment(fragment);
     }
 
-    public void loadFragment(Fragment fragment)
-    {
+    @Override
+    public void onButtonClick(String productId, boolean inWish, boolean inCart) {
+        for (int i = 0; i < mobiles.size(); i++) {
+            if (productId.equals(mobiles.get(i).getId())) {
+                mobiles.get(i).setInWish(inWish);
+                mobiles.get(i).setInCart(inCart);
+                viewModel.sendMobiles(mobiles);
+                flag = true;
+                break;
+            }
+        }
+    }
+
+    public void loadFragment(Fragment fragment) {
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_container, fragment)
                 .addToBackStack(null)
                 .commit();
     }
+
     @Override
     public void onDestroy() {
         viewModel.cleanMemory();
+        if (!flag) {
+            viewModel.sendMobiles(mobiles);
+        }
         super.onDestroy();
     }
 

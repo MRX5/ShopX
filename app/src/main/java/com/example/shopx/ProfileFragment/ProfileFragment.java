@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.shopx.MainActivity.SharedViewModel;
 import com.example.shopx.R;
 import com.example.shopx.RegisterActivity.RegisterActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -27,6 +29,8 @@ public class ProfileFragment extends Fragment {
     private TextView usernameTxt;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    private SharedViewModel viewModel;
+
     public ProfileFragment() {
         // Required empty public constructor
     }
@@ -41,6 +45,7 @@ public class ProfileFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mAuth=FirebaseAuth.getInstance();
         db=FirebaseFirestore.getInstance();
+        viewModel= ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
     }
 
     @Override
@@ -85,5 +90,13 @@ public class ProfileFragment extends Fragment {
         getActivity().finish();
     }
 
-
+    @Override
+    public void onDestroy() {
+        if(viewModel.mobiles!=null) {
+            viewModel.mobiles.observe(this,results->{
+                viewModel.sendMobiles(results);
+            });
+        }
+        super.onDestroy();
+    }
 }

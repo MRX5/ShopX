@@ -6,17 +6,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.shopx.MainActivity.SharedViewModel;
 import com.example.shopx.Model.ProductInfo;
+import com.example.shopx.ProductDetailsFragment.ProductDetails;
 import com.example.shopx.ProductsFragment.ProductsAdapter;
 import com.example.shopx.ProductsFragment.ProductsFragment;
-import com.example.shopx.Model.Product;
 import com.example.shopx.R;
 import com.example.shopx.Repository;
 import com.example.shopx.SearchFragment.SearchFragment;
@@ -27,11 +30,13 @@ import com.example.shopx.databinding.FragmentHomeBinding;
  * Use the {@link HomeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+
 public class HomeFragment extends Fragment implements View.OnClickListener, ProductsAdapter.onItemClickListener {
 
     private FragmentHomeBinding binding;
     private Repository repository;
     private ProductsAdapter adapter;
+    private SharedViewModel viewModel;
 
     public static HomeFragment newInstance() {
         HomeFragment fragment = new HomeFragment();
@@ -47,6 +52,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Prod
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adapter = new ProductsAdapter(getContext(), this);
+        viewModel= ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
     }
 
     @Override
@@ -81,9 +87,24 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Prod
         binding.rvMobiles.setNestedScrollingEnabled(false);
         binding.rvMobiles.setHasFixedSize(true);
         binding.mobilesProgressBar.setVisibility(View.VISIBLE);
-        repository.getProducts("Mobiles").observe(this, mobiles -> {
+
+        if(viewModel.mobiles !=null)
+        {
+            viewModel.mobiles.observe(this, products-> {
                 binding.mobilesProgressBar.setVisibility(View.GONE);
-                adapter.setProducts(mobiles);
+                adapter.setProducts(products);
+            });
+        }
+        else {
+            getMobiles();
+        }
+    }
+
+    private void getMobiles() {
+        repository.getProducts("Mobiles").observe(this, mobiles -> {
+            binding.mobilesProgressBar.setVisibility(View.GONE);
+            adapter.setProducts(mobiles);
+            viewModel.sendMobiles(mobiles);
         });
     }
 
@@ -129,6 +150,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Prod
 
     @Override
     public void onItemClick(ProductInfo mobile) {
+        ProductDetails fragment=ProductDetails.newInstance(mobile.getId(),mobile.getCategory());
+        loadFragment(fragment);
+    }
+
+    @Override
+    public void onButtonClick(String productId, boolean inWish, boolean inCart) {
 
     }
 }

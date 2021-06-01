@@ -8,12 +8,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.shopx.MainActivity.SharedViewModel;
 import com.example.shopx.Model.ProductInfo;
 import com.example.shopx.R;
 import com.example.shopx.Repository;
@@ -28,6 +31,9 @@ public class CartFragment extends Fragment implements CartAdapter.CartAdapterInt
     private FragmentCartBinding binding;
     private SearchFragment.BottomNavigationListener listener;
     private CartAdapter adapter;
+    private SharedViewModel viewModel;
+    private List<ProductInfo> mobiles;
+    private boolean flag = false;
     private Repository repository;
 
     public CartFragment() {
@@ -56,6 +62,7 @@ public class CartFragment extends Fragment implements CartAdapter.CartAdapterInt
         listener.showBottomNavigation(false);
         adapter = new CartAdapter(this);
         repository = new Repository();
+        viewModel = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
     }
 
     @Override
@@ -68,6 +75,12 @@ public class CartFragment extends Fragment implements CartAdapter.CartAdapterInt
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+
+        viewModel.mobiles.observe(this, results -> {
+            mobiles = results;
+        });
+
 
         initializeViews();
 
@@ -106,10 +119,27 @@ public class CartFragment extends Fragment implements CartAdapter.CartAdapterInt
     @Override
     public void onRemoveIconClick(ProductInfo product) {
         repository.removeFormCart(product);
+
+        for (int i = 0; i < mobiles.size(); i++) {
+            if (product.getId().equals(mobiles.get(i).getId())) {
+                mobiles.get(i).setInCart(false);
+                viewModel.sendMobiles(mobiles);
+                flag = true;
+                break;
+            }
+        }
     }
 
     @Override
     public void getTotalPrice(double total) {
-        binding.totalPrice.setText(total+"");
+        binding.totalPrice.setText(total + "");
+    }
+
+    @Override
+    public void onDestroy() {
+        if (!flag) {
+            viewModel.sendMobiles(mobiles);
+        }
+        super.onDestroy();
     }
 }

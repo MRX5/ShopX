@@ -1,50 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nested_scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/gray"
     tools:context=".HomeFragment.HomeFragment">
 
-    <TextView
-        android:id="@+id/app_txt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="ShopX"
-        android:textColor="@color/sky"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/home_search_view"
-        style="@style/search_view_style"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/search_view_round"
-        android:elevation="1dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/app_txt" />
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/nested_scroll_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="4dp"
-        android:overScrollMode="never"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/home_search_view">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+            <TextView
+                android:id="@+id/app_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="ShopX"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/sky"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/home_search_view"
+                style="@style/search_view_style"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/search_view_round"
+                android:elevation="1dp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -67,8 +52,9 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="16dp"
+                    android:textStyle="bold"
                     android:fontFamily="@font/gilroy"
-                    android:text="See more"
+                    android:text="@string/see_more"
                     android:textColor="@color/sky"
                     android:textSize="16sp" />
             </RelativeLayout>
@@ -83,28 +69,35 @@
                     layout="@layout/home_fragment_catg" />
             </HorizontalScrollView>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="24dp"
-                android:text="@string/best_deals"
-                android:textColor="@color/header_text"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_best_deals"
+            <RelativeLayout
+                android:layout_marginTop="36dp"
+                android:layout_marginBottom="8dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="24dp"
-                android:text="@string/mobiles"
-                android:textColor="@color/header_text"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_centerVertical="true"
+                    android:text="@string/mobiles"
+                    android:textColor="@color/header_text"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/mobiles_see_more"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="16dp"
+                    android:fontFamily="@font/gilroy"
+                    android:textStyle="bold"
+                    android:text="@string/see_more"
+                    android:textColor="@color/sky"
+                    android:textSize="16sp" />
+            </RelativeLayout>
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -113,7 +106,8 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_mobiles"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:minHeight="300dp"/>
 
                 <ProgressBar
                     android:id="@+id/mobiles_progress_bar"
@@ -122,5 +116,4 @@
                     android:layout_height="wrap_content" />
             </FrameLayout>
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

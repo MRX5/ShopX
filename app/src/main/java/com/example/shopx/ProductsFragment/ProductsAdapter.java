@@ -46,7 +46,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.viewHo
         holder.product_name.setText(products.get(position).getName());
         holder.product_price.setText(products.get(position).getPrice());
         if (products.get(position).isInWish()) {
-            holder.fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.icon_favourite_green, null));
+            holder.fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.icon_favourite_red, null));
         } else {
             holder.fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.icon_favourite, null));
         }
@@ -56,7 +56,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.viewHo
         } else {
             holder.add_cart_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.icon_add_cart, null));
         }
-        Glide.with(mContext).load("https://cf2.s3.souqcdn.com/item/2020/12/13/13/21/74/96/9/item_L_132174969_ffac6131feef0.jpg").into(holder.product_image);
+        Glide.with(mContext).load(products.get(position).getImageUrl()).into(holder.product_image);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.viewHo
                     products.get(position).setInWish(false);
                     Toast.makeText(mContext, "Product removed from wishlist", Toast.LENGTH_SHORT).show();
                 } else {
-                    fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.icon_favourite_green, null));
+                    fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.icon_favourite_red, null));
                     products.get(position).setInWish(true);
                     Toast.makeText(mContext, "Product added to wishlist", Toast.LENGTH_SHORT).show();
                 }

@@ -3,7 +3,7 @@ package com.example.shopx.Model;
 public class ProductInfo {
     private String id;
     private String name;
-    private String image_url;
+    private String imageUrl;
     private String price;
     private String category;
     private boolean InCart;
@@ -29,7 +29,7 @@ public class ProductInfo {
 
     public ProductInfo(String name, String image_url, String price) {
         this.name = name;
-        this.image_url = image_url;
+        this.imageUrl = image_url;
         this.price = price;
     }
 
@@ -49,12 +49,12 @@ public class ProductInfo {
         this.name = name;
     }
 
-    public String getImage_url() {
-        return image_url;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setImage_url(String image_url) {
-        this.image_url = image_url;
+    public void setImageUrl(String image_url) {
+        this.imageUrl = image_url;
     }
 
     public String getPrice() {

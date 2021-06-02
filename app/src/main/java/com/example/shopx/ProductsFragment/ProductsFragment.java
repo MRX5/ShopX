@@ -23,6 +23,7 @@ import com.example.shopx.ProductDetailsFragment.ProductDetails;
 import com.example.shopx.R;
 import com.example.shopx.Repository;
 import com.example.shopx.SearchFragment.SearchFragment;
+import com.example.shopx.Utils.Constants;
 import com.example.shopx.Utils.GridSpacingItemDecoration;
 import com.example.shopx.databinding.FragmentProductsBinding;
 
@@ -34,7 +35,6 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class ProductsFragment extends Fragment implements ProductsAdapter.onItemClickListener {
-    private final static String CATEGORY = "category";
 
     private FragmentProductsBinding binding;
     private ProductsAdapter adapter;
@@ -52,7 +52,7 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.onItem
     public static ProductsFragment newInstance(String category) {
         ProductsFragment fragment = new ProductsFragment();
         Bundle args = new Bundle();
-        args.putString(CATEGORY, category);
+        args.putString(Constants.CATEGORY, category);
         fragment.setArguments(args);
         return fragment;
     }
@@ -61,7 +61,7 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.onItem
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
-        category = bundle.getString(CATEGORY);
+        category = bundle.getString(Constants.CATEGORY);
         viewModel = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
         adapter = new ProductsAdapter(getContext(), this);
     }

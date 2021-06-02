@@ -18,6 +18,7 @@ import com.example.shopx.MainActivity.SharedViewModel;
 import com.example.shopx.R;
 import com.example.shopx.RegisterActivity.RegisterActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -25,8 +26,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ProfileFragment extends Fragment {
 
-    private Button signOutBtn;
-    private TextView usernameTxt;
+    private MaterialButton signOutBtn;
+    private TextView usernameTxt,emailTxt;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private SharedViewModel viewModel;
@@ -58,6 +59,7 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         usernameTxt=view.findViewById(R.id.user_name_txt);
+        emailTxt=view.findViewById(R.id.email_txt);
         signOutBtn=view.findViewById(R.id.sign_out_button);
         if(mAuth.getCurrentUser()!=null)
         {
@@ -68,7 +70,8 @@ public class ProfileFragment extends Fragment {
                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            usernameTxt.setText(documentSnapshot.get("username").toString());
+                            usernameTxt.setText(documentSnapshot.getString("username"));
+                            emailTxt.setText(documentSnapshot.getString("email"));
                         }
                     });
 

@@ -10,7 +10,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,12 +17,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
 import com.example.shopx.MainActivity.SharedViewModel;
 import com.example.shopx.Model.Product;
 import com.example.shopx.Model.ProductInfo;
 import com.example.shopx.R;
 import com.example.shopx.Repository;
 import com.example.shopx.SearchFragment.SearchFragment;
+import com.example.shopx.Utils.Constants;
 import com.example.shopx.databinding.FragmentProductDetailsBinding;
 
 import java.util.List;
@@ -31,8 +32,6 @@ import java.util.List;
 
 public class ProductDetails extends Fragment {
 
-    private final static String CATEGORY = "category";
-    private final static String PRODUCT_ID = "product_id";
     private String productCategory;
     private String productId;
     private FragmentProductDetailsBinding binding;
@@ -62,8 +61,8 @@ public class ProductDetails extends Fragment {
     public static ProductDetails newInstance(String productId, String category) {
         ProductDetails fragment = new ProductDetails();
         Bundle args = new Bundle();
-        args.putString(PRODUCT_ID, productId);
-        args.putString(CATEGORY, category);
+        args.putString(Constants.PRODUCT_ID, productId);
+        args.putString(Constants.CATEGORY, category);
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,8 +71,8 @@ public class ProductDetails extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        productId = getArguments().getString(PRODUCT_ID);
-        productCategory = getArguments().getString(CATEGORY);
+        productId = getArguments().getString(Constants.PRODUCT_ID);
+        productCategory = getArguments().getString(Constants.CATEGORY);
 
         listener.showBottomNavigation(false);
 
@@ -137,7 +136,7 @@ public class ProductDetails extends Fragment {
         binding.productName.setText(product.getName());
         binding.productPrice.setText(product.getPrice());
         binding.productDescription.setText(product.getDescription());
-
+        Glide.with(this).load(product.getImageUrl()).into(binding.productImage);
         binding.progressBar.setVisibility(View.GONE);
         binding.contentScrollView.setVisibility(View.VISIBLE);
 
@@ -153,7 +152,7 @@ public class ProductDetails extends Fragment {
             menu.findItem(R.id.action_add_cart).setIcon(R.drawable.icon_add_cart_green);
 
         if (product.isInWishlist())
-            menu.findItem(R.id.action_favourite).setIcon(R.drawable.icon_favourite_green);
+            menu.findItem(R.id.action_favourite).setIcon(R.drawable.icon_favourite_red);
 
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -185,7 +184,7 @@ public class ProductDetails extends Fragment {
                 product.setInWishlist(product.isInWishlist());
             } else {
                 product.setInWishlist(true);
-                item.setIcon(R.drawable.icon_favourite_green);
+                item.setIcon(R.drawable.icon_favourite_red);
                 product.setInWishlist(product.isInWishlist());
             }
             return true;

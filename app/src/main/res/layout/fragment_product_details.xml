@@ -138,9 +138,10 @@
 
             <TextView
                 android:id="@+id/product_description"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
+                android:gravity="start"
+                android:layout_marginTop="16dp"
                 android:text="Apple Iphone 8 Plus With Facetime - 256 GB, 4G LTE, Red, 3 GB Ram f f f f "
                 app:layout_constraintEnd_toEndOf="@+id/view"
                 app:layout_constraintStart_toStartOf="@+id/textView16"

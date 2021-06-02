@@ -87,7 +87,7 @@ public class SearchAdapterCards extends RecyclerView.Adapter<SearchAdapterCards.
             }
             if(currItem.isInWish())
             {
-                fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(),R.drawable.icon_favourite_green,null));
+                fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(),R.drawable.icon_favourite_red,null));
             }
             else
             {
@@ -107,7 +107,7 @@ public class SearchAdapterCards extends RecyclerView.Adapter<SearchAdapterCards.
                     fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(),R.drawable.icon_favourite,null));
                     items.get(getAdapterPosition()).setInWish(false);
                 } else {
-                    fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(),R.drawable.icon_favourite_green,null));
+                    fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(),R.drawable.icon_favourite_red,null));
                     items.get(getAdapterPosition()).setInWish(true);
                 }
 

@@ -65,20 +65,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Prod
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setupBestDealsRecycler();
         setupMobilesRecycler();
         binding.homeSearchView.setOnClickListener(this);
         binding.categories.categoryMobiles.setOnClickListener(this);
         binding.categories.categoryLaptops.setOnClickListener(this);
+        binding.mobilesSeeMore.setOnClickListener(this);
     }
 
-
-    private void setupBestDealsRecycler() {
-        binding.rvBestDeals.setHasFixedSize(true);
-        binding.rvBestDeals.setLayoutManager(new LinearLayoutManager(getActivity()));
-        binding.rvBestDeals.setNestedScrollingEnabled(false);
-
-    }
 
     private void setupMobilesRecycler() {
         binding.rvMobiles.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
@@ -137,6 +130,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Prod
                 break;
             case R.id.category_see_more:
                 Toast.makeText(getActivity(), "See more", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.mobiles_see_more:
+                ProductsFragment fragment = ProductsFragment.newInstance("Mobiles");
+                loadFragment(fragment);
                 break;
         }
     }

@@ -70,6 +70,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Prod
         binding.homeSearchView.setOnClickListener(this);
         binding.categories.categoryMobiles.setOnClickListener(this);
         binding.categories.categoryLaptops.setOnClickListener(this);
+        binding.categories.categoryHome.setOnClickListener(this);
         binding.mobilesSeeMore.setOnClickListener(this);
     }
 
@@ -125,7 +126,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Prod
                 Toast.makeText(getActivity(), "Fashion", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.category_home:
-                Toast.makeText(getActivity(), "Home", Toast.LENGTH_SHORT).show();
+                ProductsFragment home = ProductsFragment.newInstance("Home");
+                loadFragment(home);
                 break;
             case R.id.mobiles_see_more:
                 ProductsFragment fragment = ProductsFragment.newInstance("Mobiles");

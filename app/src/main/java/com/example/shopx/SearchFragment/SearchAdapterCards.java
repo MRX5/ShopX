@@ -12,9 +12,11 @@ import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.shopx.Model.ProductInfo;
 import com.example.shopx.R;
 import com.example.shopx.Repository;
+import com.example.shopx.Utils.FormatPrice;
 
 import java.util.List;
 
@@ -76,7 +78,9 @@ public class SearchAdapterCards extends RecyclerView.Adapter<SearchAdapterCards.
         }
         private void bind(ProductInfo currItem) {
             productName.setText(currItem.getName());
-            productPrice.setText(currItem.getPrice());
+            String price= FormatPrice.format(currItem.getPrice());
+            productPrice.setText(price);
+            Glide.with(mContext).load(currItem.getImageUrl()).into(productImage);
             if(currItem.isInCart())
             {
                 add_cart_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(),R.drawable.icon_add_cart_green,null));

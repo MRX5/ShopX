@@ -45,7 +45,7 @@ public class WishlistFragment extends Fragment implements WishlistAdapter.onFavo
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = new WishlistAdapter(this);
+        adapter = new WishlistAdapter(this,getContext());
         repository = new Repository();
         viewModel = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
     }

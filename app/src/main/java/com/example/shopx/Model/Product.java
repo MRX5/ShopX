@@ -78,17 +78,7 @@ public class Product {
     }
 
     public String getPrice() {
-        int cnt = 0;
-        StringBuilder builder = new StringBuilder();
-        for (int i = price.length() - 1; i >= 0; i--) {
-            builder.append(price.charAt(i));
-            cnt++;
-            if (cnt == 3) {
-                cnt = 0;
-                builder.append(',');
-            }
-        }
-        return builder.reverse().toString();
+        return price;
     }
 
     public void setPrice(String price) {

@@ -20,6 +20,7 @@ import com.example.shopx.R;
 import java.util.List;
 
 import com.example.shopx.Repository;
+import com.example.shopx.Utils.FormatPrice;
 
 public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.viewHolder> {
     private List<ProductInfo> products;
@@ -43,20 +44,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.viewHo
 
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
-        holder.product_name.setText(products.get(position).getName());
-        holder.product_price.setText(products.get(position).getPrice());
-        if (products.get(position).isInWish()) {
-            holder.fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.icon_favourite_red, null));
-        } else {
-            holder.fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.icon_favourite, null));
-        }
-
-        if (products.get(position).isInCart()) {
-            holder.add_cart_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.icon_add_cart_green, null));
-        } else {
-            holder.add_cart_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.icon_add_cart, null));
-        }
-        Glide.with(mContext).load(products.get(position).getImageUrl()).into(holder.product_image);
+        holder.bind(products.get(position));
     }
 
     @Override
@@ -133,6 +121,25 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.viewHo
             itemView.setOnClickListener(this);
         }
 
+        public void bind(ProductInfo currProduct)
+        {
+            product_name.setText(currProduct.getName());
+            String price= FormatPrice.format(currProduct.getPrice());
+            product_price.setText(price);
+
+            if (currProduct.isInWish()) {
+                fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.icon_favourite_red, null));
+            } else {
+                fav_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.icon_favourite, null));
+            }
+
+            if (currProduct.isInCart()) {
+                add_cart_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.icon_add_cart_green, null));
+            } else {
+                add_cart_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.icon_add_cart, null));
+            }
+            Glide.with(mContext).load(currProduct.getImageUrl()).into(product_image);
+        }
         @Override
         public void onClick(View v) {
             int itemId = getAdapterPosition();

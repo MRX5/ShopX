@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -25,10 +26,9 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Bo
         , BottomNavigationView.OnNavigationItemSelectedListener {
 
     private final int HOME_FRAGMENT = 1;
-    private final int CATEGORIES_FRAGMENT = 2;
-    private final int CART_FRAGMENT = 3;
-    private final int WISHLIST_FRAGMENT = 4;
-    private final int PROFILE_FRAGMENT = 5;
+    private final int CART_FRAGMENT = 2;
+    private final int WISHLIST_FRAGMENT = 3;
+    private final int PROFILE_FRAGMENT = 4;
     private int curr_fragment = HOME_FRAGMENT;
     private FragmentManager fragmentManager=getSupportFragmentManager();
 
@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Bo
         if (bottomNavigationView.getVisibility() == View.GONE) {
             bottomNavigationView.setVisibility(View.VISIBLE);
         }
-
         if(curr_fragment!=HOME_FRAGMENT)
         {
             bottomNavigationView.setSelectedItemId(R.id.action_home);
@@ -103,8 +102,6 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Bo
                     /*HomeFragment homeFragment = HomeFragment.newInstance();
                     loadFragment(homeFragment);*/
                 }
-                return true;
-            case R.id.action_categories:
                 return true;
             case R.id.action_cart:
                 if(curr_fragment!=CART_FRAGMENT)

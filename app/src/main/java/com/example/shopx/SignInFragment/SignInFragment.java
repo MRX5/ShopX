@@ -17,6 +17,7 @@ import com.example.shopx.MainActivity.MainActivity;
 import com.example.shopx.R;
 import com.example.shopx.SignUpFragment.SignUpFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -107,18 +108,15 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
         String password=passwordTxt.getText().toString().trim();
 
         mAuth.signInWithEmailAndPassword(email,password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful())
-                        {
-                            launchMainActivity();
-                        }
-                        else
-                        {
-                            String error=task.getException().getMessage();
-                            Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
-                        }
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful())
+                    {
+                        launchMainActivity();
+                    }
+                    else
+                    {
+                        String error=task.getException().getMessage();
+                        Toast.makeText(getActivity(), error, Toast.LENGTH_LONG).show();
                     }
                 });
     }

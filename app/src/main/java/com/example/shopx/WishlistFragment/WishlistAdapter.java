@@ -1,5 +1,6 @@
 package com.example.shopx.WishlistFragment;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,17 +11,21 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.shopx.Model.ProductInfo;
 import com.example.shopx.R;
+import com.example.shopx.Utils.FormatPrice;
 
 import java.util.List;
 
 public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.viewHolder> {
     private List<ProductInfo> items;
+    private Context mContext;
      private onFavouriteIconClickListener listener;
-    public WishlistAdapter(onFavouriteIconClickListener listener)
+    public WishlistAdapter(onFavouriteIconClickListener listener,Context mContext)
     {
         this.listener=listener;
+        this.mContext=mContext;
     }
     @NonNull
     @Override
@@ -31,8 +36,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.viewHo
 
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
-        holder.productName.setText(items.get(position).getName());
-        holder.productPrice.setText(items.get(position).getPrice());
+        holder.bind(items.get(position));
     }
 
     public void setItems(List<ProductInfo> items) {
@@ -68,6 +72,13 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.viewHo
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position,items.size());
             });
+        }
+
+        public void bind(ProductInfo currProduct) {
+            productName.setText(currProduct.getName());
+            String price= FormatPrice.format(currProduct.getPrice());
+            productPrice.setText(price);
+            Glide.with(mContext).load(currProduct.getImageUrl()).into(productImage);
         }
     }
     interface onFavouriteIconClickListener{

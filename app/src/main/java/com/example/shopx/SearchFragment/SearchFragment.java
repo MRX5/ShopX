@@ -16,9 +16,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import com.example.shopx.MainActivity.SharedViewModel;
-import com.example.shopx.Model.Product;
 import com.example.shopx.Model.ProductInfo;
 import com.example.shopx.ProductDetailsFragment.ProductDetails;
 import com.example.shopx.R;
@@ -127,7 +127,6 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
 
     @Override
     public boolean onQueryTextChange(String newText) {
-
         listener.showBottomNavigation(true);
         showFilterIcon(false);
 

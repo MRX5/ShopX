@@ -17,7 +17,13 @@
             android:layout_height="match_parent"
             android:scaleType="fitXY"
             android:src="@drawable/item1" />
-
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_gravity="bottom"
+            android:alpha=".2"
+            android:background="@color/black"
+            />
         <TextView
             style="@style/Category_Name_Style"
             android:text="@string/mobiles" />
@@ -35,6 +41,13 @@
             android:layout_height="match_parent"
             android:scaleType="fitXY"
             android:src="@drawable/item2" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_gravity="bottom"
+            android:alpha=".2"
+            android:background="@color/black"
+            />
 
         <TextView
             style="@style/Category_Name_Style"
@@ -53,6 +66,13 @@
             android:layout_height="match_parent"
             android:scaleType="fitXY"
             android:src="@drawable/item3" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_gravity="bottom"
+            android:alpha=".2"
+            android:background="@color/black"
+            />
 
         <TextView
             style="@style/Category_Name_Style"
@@ -71,28 +91,18 @@
             android:layout_height="match_parent"
             android:scaleType="fitXY"
             android:src="@drawable/item4" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_gravity="bottom"
+            android:alpha=".2"
+            android:background="@color/black"
+            />
 
         <TextView
             style="@style/Category_Name_Style"
             android:text="Home" />
     </androidx.cardview.widget.CardView>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/category_beauty"
-        android:layout_width="90dp"
-        android:layout_height="116dp"
-        android:layout_marginStart="18dp"
-        app:cardCornerRadius="10dp">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:src="@drawable/item4" />
-
-        <TextView
-            style="@style/Category_Name_Style"
-            android:text="@string/home" />
-    </androidx.cardview.widget.CardView>
 
 </LinearLayout>

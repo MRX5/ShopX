@@ -1,8 +1,5 @@
 package com.example.shopx;
 
-import android.util.Log;
-
-import androidx.annotation.Nullable;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -13,9 +10,7 @@ import com.example.shopx.Model.myResponse;
 import com.example.shopx.Utils.Constants;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -24,15 +19,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.example.shopx.Model.Product;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.auth.User;
 
 public class Repository {
 
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private LifecycleOwner lifecycle;
-
     public Repository() {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -52,7 +44,7 @@ public class Repository {
                 .addSnapshotListener((value, error) -> {
                         List<ProductInfo> products = new ArrayList<>();
                         for (DocumentSnapshot document : value) {
-                            // get inWishlist and inCart Products
+
                             getInWish_and_InCart(document.getId()).observe(lifecycle, response -> {
                                 boolean wish = response.isInWish();
                                 boolean cart = response.isInCart();
@@ -67,27 +59,6 @@ public class Repository {
                             });
                         }
                 });
- /*               .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        List<ProductInfo> products = new ArrayList<>();
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            // get inWishlist and inCart Products
-                            getInWish_and_InCart(document.getId()).observe(lifecycle, response -> {
-                                boolean wish = response.isInWish();
-                                boolean cart = response.isInCart();
-                                ProductInfo product = document.toObject(ProductInfo.class);
-                                product.setId(document.getId());
-                                product.setInWish(wish);
-                                product.setInCart(cart);
-                                products.add(product);
-                                if (products.size() == task.getResult().size()) {
-                                    results.setValue(products);
-                                }
-                            });
-                        }
-                    }
-                });*/
         return results;
     }
 
@@ -187,7 +158,6 @@ public class Repository {
                 .addOnCompleteListener(task -> {
                     List<myResponse> response = new ArrayList<>();
                     for (DocumentSnapshot document : task.getResult()) {
-                        Log.d("aaa", ""+task.getResult().size());
                         response.add(new myResponse(document.getId(), document.getString(Constants.CATEGORY)));
                     }
                     results.setValue(response);
@@ -262,7 +232,6 @@ public class Repository {
                 .addOnCompleteListener(task -> {
 
                     Product result = task.getResult().toObject(Product.class);
-                    Log.d("aaa",  result.getName()+"  "+result.getImageUrl());
                     result.setId(productId);
                     product.setValue(result);
                 });

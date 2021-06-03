@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
@@ -25,6 +26,8 @@ import com.example.shopx.Repository;
 import com.example.shopx.SearchFragment.SearchFragment;
 import com.example.shopx.databinding.FragmentHomeBinding;
 
+import java.util.List;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link HomeFragment#newInstance} factory method to
@@ -32,12 +35,10 @@ import com.example.shopx.databinding.FragmentHomeBinding;
  */
 
 public class HomeFragment extends Fragment implements View.OnClickListener, ProductsAdapter.onItemClickListener {
-
     private FragmentHomeBinding binding;
     private Repository repository;
     private ProductsAdapter adapter;
     private SharedViewModel viewModel;
-
     public static HomeFragment newInstance() {
         HomeFragment fragment = new HomeFragment();
         return fragment;
@@ -90,6 +91,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Prod
         }
         else {
             getMobiles();
+
         }
     }
 
@@ -125,12 +127,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Prod
             case R.id.category_home:
                 Toast.makeText(getActivity(), "Home", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.category_beauty:
-                Toast.makeText(getActivity(), "Beauty", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.category_see_more:
-                Toast.makeText(getActivity(), "See more", Toast.LENGTH_SHORT).show();
-                break;
             case R.id.mobiles_see_more:
                 ProductsFragment fragment = ProductsFragment.newInstance("Mobiles");
                 loadFragment(fragment);
@@ -155,4 +151,5 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Prod
     public void onButtonClick(String productId, boolean inWish, boolean inCart) {
 
     }
+
 }

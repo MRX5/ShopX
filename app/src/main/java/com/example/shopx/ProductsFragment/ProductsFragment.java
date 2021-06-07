@@ -99,10 +99,15 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.onItem
     }
 
     private void initializeViews() {
+        String curr_category = category;
+        if (category.equals(Constants.HOME)) {
+            curr_category = Constants.HOME_APPLIANCES;
+        }
         Toolbar toolbar = binding.myToolbar.getRoot();
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(category);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back_arrow);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(curr_category);
 
         binding.homeSearchView.setOnClickListener(v -> {
             SearchFragment fragment = SearchFragment.newInstance();
@@ -168,6 +173,7 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.onItem
 
     public void loadFragment(Fragment fragment) {
         getActivity().getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                 .replace(R.id.main_container, fragment)
                 .addToBackStack(null)
                 .commit();

@@ -52,7 +52,7 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mAuth=FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -65,11 +65,11 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        emailTxt=view.findViewById(R.id.email_txt);
-        passwordTxt=view.findViewById(R.id.password_txt);
-        signInBtn=view.findViewById(R.id.sign_in_button);
-        signUpBtn=view.findViewById(R.id.sign_up_button);
-        forgotPasswordBtn=view.findViewById(R.id.forgot_password_button);
+        emailTxt = view.findViewById(R.id.email_txt);
+        passwordTxt = view.findViewById(R.id.password_txt);
+        signInBtn = view.findViewById(R.id.sign_in_button);
+        signUpBtn = view.findViewById(R.id.sign_up_button);
+        forgotPasswordBtn = view.findViewById(R.id.forgot_password_button);
 
         signInBtn.setOnClickListener(this);
         signUpBtn.setOnClickListener(this);
@@ -79,51 +79,65 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        int viewId=v.getId();
+        int viewId = v.getId();
 
-        switch (viewId)
-        {
+        switch (viewId) {
             case R.id.sign_in_button:
                 signIn();
                 break;
             case R.id.sign_up_button:
-                SignUpFragment signUpFragment=SignUpFragment.newInstance();
+                SignUpFragment signUpFragment = SignUpFragment.newInstance();
                 loadFragment(signUpFragment);
                 break;
             case R.id.forgot_password_button:
-                break;
+                forgotPassword();
         }
+    }
+
+    private void forgotPassword() {
+        mAuth.sendPasswordResetEmail(emailTxt.getText().toString())
+
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getActivity(), "We have sent you instructions to reset your password!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getActivity(), "Failed to send reset email!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     private void loadFragment(Fragment fragment) {
         getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.register_frame_layout,fragment)
+                .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                .replace(R.id.register_frame_layout, fragment)
                 .addToBackStack(null)
                 .commit();
     }
 
 
     private void signIn() {
-        String email=emailTxt.getText().toString().trim();
-        String password=passwordTxt.getText().toString().trim();
+        String email = emailTxt.getText().toString().trim();
+        String password = passwordTxt.getText().toString().trim();
 
-        mAuth.signInWithEmailAndPassword(email,password)
+        mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
-                    if(task.isSuccessful())
-                    {
+                    if (task.isSuccessful()) {
                         launchMainActivity();
-                    }
-                    else
-                    {
-                        String error=task.getException().getMessage();
+                    } else {
+                        String error = task.getException().getMessage();
                         Toast.makeText(getActivity(), error, Toast.LENGTH_LONG).show();
                     }
                 });
     }
-
-    private void launchMainActivity()
+    private void checkInfo(String email,String password)
     {
-        Intent intent=new Intent(getActivity(), MainActivity.class);
+    }
+
+    private void launchMainActivity() {
+        Intent intent = new Intent(getActivity(), MainActivity.class);
         startActivity(intent);
         getActivity().finish();
     }

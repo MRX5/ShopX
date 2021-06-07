@@ -4,6 +4,8 @@ public class Constants {
     public static final String USER_PRODUCTS = "UserProducts";
     public static final String MOBILES = "Mobiles";
     public static final String LAPTOPS = "Laptops";
+    public static final String HOME="Home";
+    public static final String HOME_APPLIANCES="Home Appliances";
     public static final String USERS = "Users";
     public static final String IN_WISHLIST = "InWish";
     public static final String IN_CART = "InCart";

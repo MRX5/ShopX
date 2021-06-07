@@ -98,6 +98,7 @@ public class CartFragment extends Fragment implements CartAdapter.CartAdapterInt
         Toolbar toolbar = binding.myToolbar.getRoot();
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back_arrow);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.cart));
         binding.rvCart.setLayoutManager(new LinearLayoutManager(getActivity()));
         binding.rvCart.setAdapter(adapter);

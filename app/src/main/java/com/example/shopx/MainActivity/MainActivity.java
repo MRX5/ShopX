@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Bo
     private final int WISHLIST_FRAGMENT = 3;
     private final int PROFILE_FRAGMENT = 4;
     private int curr_fragment = HOME_FRAGMENT;
-    private FragmentManager fragmentManager=getSupportFragmentManager();
+    private FragmentManager fragmentManager = getSupportFragmentManager();
 
     private BottomNavigationView bottomNavigationView;
     FirebaseAuth mAuth;
@@ -70,12 +70,10 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Bo
         if (bottomNavigationView.getVisibility() == View.GONE) {
             bottomNavigationView.setVisibility(View.VISIBLE);
         }
-        if(curr_fragment!=HOME_FRAGMENT)
-        {
+        if (curr_fragment != HOME_FRAGMENT) {
             bottomNavigationView.setSelectedItemId(R.id.action_home);
             return;
-        }
-        else if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
+        } else if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
             finish();
         }
         super.onBackPressed();
@@ -97,34 +95,32 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Bo
         switch (itemId) {
             case R.id.action_home:
                 if (curr_fragment != HOME_FRAGMENT) {
-                    curr_fragment=HOME_FRAGMENT;
+                    curr_fragment = HOME_FRAGMENT;
                     clearBackStack();
                     /*HomeFragment homeFragment = HomeFragment.newInstance();
                     loadFragment(homeFragment);*/
                 }
                 return true;
             case R.id.action_cart:
-                if(curr_fragment!=CART_FRAGMENT)
-                {
-                    curr_fragment=CART_FRAGMENT;
+                if (curr_fragment != CART_FRAGMENT) {
+                    curr_fragment = CART_FRAGMENT;
                     clearBackStack();
-                    CartFragment cartFragment= CartFragment.newInstance();
+                    CartFragment cartFragment = CartFragment.newInstance();
                     loadFragment(cartFragment);
                 }
                 return true;
             case R.id.action_favourite:
-                if(curr_fragment!=WISHLIST_FRAGMENT)
-                {
-                    curr_fragment=WISHLIST_FRAGMENT;
+                if (curr_fragment != WISHLIST_FRAGMENT) {
+                    curr_fragment = WISHLIST_FRAGMENT;
                     clearBackStack();
-                    WishlistFragment wishlistFragment=WishlistFragment.newInstance();
+                    WishlistFragment wishlistFragment = WishlistFragment.newInstance();
                     loadFragment(wishlistFragment);
                 }
                 return true;
             case R.id.action_profile:
 
                 if (curr_fragment != PROFILE_FRAGMENT) {
-                    curr_fragment=PROFILE_FRAGMENT;
+                    curr_fragment = PROFILE_FRAGMENT;
                     clearBackStack();
                     ProfileFragment profileFragment = ProfileFragment.newInstance();
                     loadFragment(profileFragment);
@@ -137,15 +133,14 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Bo
 
     public void loadFragment(Fragment fragment) {
 
-         fragmentManager.beginTransaction()
-         .replace(R.id.main_container, fragment)
-                 .addToBackStack(null)
+        fragmentManager.beginTransaction()
+                .replace(R.id.main_container, fragment)
+                .addToBackStack(null)
                 .commit();
     }
 
-    public void clearBackStack()
-    {
-        for(int i=0;i<fragmentManager.getBackStackEntryCount()-1;i++)
+    public void clearBackStack() {
+        for (int i = 0; i < fragmentManager.getBackStackEntryCount() - 1; i++)
             fragmentManager.popBackStack();
     }
 }

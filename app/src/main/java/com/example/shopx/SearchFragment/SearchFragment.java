@@ -162,6 +162,7 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
     public void onItemClick(ProductInfo product) {
         ProductDetails fragment = ProductDetails.newInstance(product.getId(), product.getCategory());
         getActivity().getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                 .replace(R.id.main_container, fragment)
                 .addToBackStack(null)
                 .commit();

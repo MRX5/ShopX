@@ -76,6 +76,7 @@ public class WishlistFragment extends Fragment implements WishlistAdapter.onFavo
         Toolbar toolbar = binding.myToolbar.getRoot();
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back_arrow);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.wishlist));
 
         binding.rvWishlist.setLayoutManager(new LinearLayoutManager(getActivity()));

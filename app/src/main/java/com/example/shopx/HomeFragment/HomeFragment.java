@@ -138,6 +138,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Prod
 
     public void loadFragment(Fragment fragment) {
         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        ft.replace(R.id.main_container, fragment);
+        ft.addToBackStack(null);
+        ft.commit();
+    }
+
+    public void loadFragmentWithFadeout(Fragment fragment)
+    {
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        ft.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
         ft.replace(R.id.main_container, fragment);
         ft.addToBackStack(null);
         ft.commit();
@@ -146,7 +156,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Prod
     @Override
     public void onItemClick(ProductInfo mobile) {
         ProductDetails fragment=ProductDetails.newInstance(mobile.getId(),mobile.getCategory());
-        loadFragment(fragment);
+        loadFragmentWithFadeout(fragment);
     }
 
     @Override

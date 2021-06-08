@@ -35,4 +35,6 @@
     <string name="description">Description</string>
     <string name="sign_out">SIGN OUT</string>
     <string name="see_more">See more</string>
+    <string name="log_out">LOG OUT</string>
+    <string name="account">Account</string>
 </resources>

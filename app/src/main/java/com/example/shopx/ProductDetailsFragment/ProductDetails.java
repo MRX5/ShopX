@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
+import com.example.shopx.MainActivity.BottomNavigationListener;
 import com.example.shopx.MainActivity.SharedViewModel;
 import com.example.shopx.Model.Product;
 import com.example.shopx.Model.ProductInfo;
@@ -37,12 +38,12 @@ public class ProductDetails extends Fragment {
     private String productCategory;
     private String productId;
     private FragmentProductDetailsBinding binding;
-    private SearchFragment.BottomNavigationListener listener;
+    private BottomNavigationListener listener;
     private Repository repository;
     private SharedViewModel viewModel;
     private List<ProductInfo> products;
     private List<ProductInfo> mobiles;
-    private boolean flag=false;
+    private boolean flag = false;
     private Product product;
     private int currProductIndex;
 
@@ -52,8 +53,8 @@ public class ProductDetails extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof SearchFragment.BottomNavigationListener) {
-            listener = (SearchFragment.BottomNavigationListener) context;
+        if (context instanceof BottomNavigationListener) {
+            listener = (BottomNavigationListener) context;
         } else {
             throw new ClassCastException(context.toString()
                     + " must implement searchProductListener");
@@ -95,7 +96,7 @@ public class ProductDetails extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewModel.mobiles.observe(this,mobiles-> this.mobiles=mobiles);
+        viewModel.mobiles.observe(this, mobiles -> this.mobiles = mobiles);
         initializeToolbar();
         binding.contentScrollView.setVisibility(View.INVISIBLE);
     }
@@ -122,11 +123,11 @@ public class ProductDetails extends Fragment {
     }
 
     private void getProduct() {
-        repository.getProduct(productCategory,productId).observe(this,product -> {
-            repository.getInWish_and_InCart(productId).observe(this,response->{
+        repository.getProduct(productCategory, productId).observe(this, product -> {
+            repository.getInWish_and_InCart(productId).observe(this, response -> {
                 product.setInCart(response.isInCart());
                 product.setInWishlist(response.isInWish());
-                this.product=product;
+                this.product = product;
                 updateUi();
             });
         });
@@ -135,7 +136,7 @@ public class ProductDetails extends Fragment {
     private void updateUi() {
         setHasOptionsMenu(true);
         binding.productName.setText(product.getName());
-        String price= FormatPrice.format(product.getPrice());
+        String price = FormatPrice.format(product.getPrice());
         binding.productPrice.setText(price);
         binding.productDescription.setText(product.getDescription());
         Glide.with(this).load(product.getImageUrl()).into(binding.productImage);
@@ -165,7 +166,7 @@ public class ProductDetails extends Fragment {
 
         if (itemId == R.id.action_add_cart) {
             repository.addToUserProducts(product.getId(), product.isInWishlist(), !product.isInCart(), product.getCategory());
-            updateMobilesList(product.getId(),product.isInWishlist(),!product.isInCart());
+            updateMobilesList(product.getId(), product.isInWishlist(), !product.isInCart());
 
             if (product.isInCart()) {
                 product.setInCart(false);
@@ -179,7 +180,7 @@ public class ProductDetails extends Fragment {
             return true;
         } else if (itemId == R.id.action_favourite) {
             repository.addToUserProducts(product.getId(), !product.isInWishlist(), product.isInCart(), product.getCategory());
-            updateMobilesList(product.getId(),!product.isInWishlist(),product.isInCart());
+            updateMobilesList(product.getId(), !product.isInWishlist(), product.isInCart());
             if (product.isInWishlist()) {
                 product.setInWishlist(false);
                 item.setIcon(R.drawable.icon_favourite);
@@ -201,7 +202,7 @@ public class ProductDetails extends Fragment {
                 mobiles.get(i).setInWish(inWish);
                 mobiles.get(i).setInCart(inCart);
                 viewModel.sendMobiles(mobiles);
-                flag=true;
+                flag = true;
                 break;
             }
         }
@@ -214,8 +215,7 @@ public class ProductDetails extends Fragment {
             products.get(currProductIndex).setInCart(product.isInCart());
             viewModel.sendProducts(products);
         }
-        if(!flag)
-        {
+        if (!flag) {
             viewModel.sendMobiles(mobiles);
         }
         super.onDestroy();

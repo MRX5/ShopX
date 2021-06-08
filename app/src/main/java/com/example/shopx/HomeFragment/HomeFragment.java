@@ -112,7 +112,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Prod
                 SearchFragment searchFragment = SearchFragment.newInstance();
                 loadFragment(searchFragment);
                 break;
-
             case R.id.category_mobiles:
                 ProductsFragment mobiles = ProductsFragment.newInstance("Mobiles");
                 loadFragment(mobiles);

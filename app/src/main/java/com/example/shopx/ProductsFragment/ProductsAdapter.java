@@ -105,12 +105,12 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.viewHo
                 if (isCart) {
                     add_cart_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.icon_add_cart, null));
                     products.get(position).setInCart(false);
-                    Toast.makeText(mContext,"Product removed from cart",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Product removed from cart", Toast.LENGTH_SHORT).show();
 
                 } else {
                     add_cart_btn.setImageDrawable(ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.icon_add_cart_green, null));
                     products.get(position).setInCart(true);
-                    Toast.makeText(mContext,"Product added to cart",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Product added to cart", Toast.LENGTH_SHORT).show();
 
                 }
                 listener.onButtonClick(products.get(position).getId(), isWish, !isCart);
@@ -121,10 +121,9 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.viewHo
             itemView.setOnClickListener(this);
         }
 
-        public void bind(ProductInfo currProduct)
-        {
+        public void bind(ProductInfo currProduct) {
             product_name.setText(currProduct.getName());
-            String price= FormatPrice.format(currProduct.getPrice());
+            String price = FormatPrice.format(currProduct.getPrice());
             product_price.setText(price);
 
             if (currProduct.isInWish()) {
@@ -140,6 +139,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.viewHo
             }
             Glide.with(mContext).load(currProduct.getImageUrl()).into(product_image);
         }
+
         @Override
         public void onClick(View v) {
             int itemId = getAdapterPosition();

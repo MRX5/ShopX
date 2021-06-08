@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
+import com.example.shopx.MainActivity.BottomNavigationListener;
 import com.example.shopx.MainActivity.SharedViewModel;
 import com.example.shopx.Model.ProductInfo;
 import com.example.shopx.ProductDetailsFragment.ProductDetails;
@@ -166,9 +167,5 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
                 .replace(R.id.main_container, fragment)
                 .addToBackStack(null)
                 .commit();
-    }
-
-    public interface BottomNavigationListener {
-        void showBottomNavigation(boolean state);
     }
 }

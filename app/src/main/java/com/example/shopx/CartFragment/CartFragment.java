@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.shopx.MainActivity.BottomNavigationListener;
 import com.example.shopx.MainActivity.MainActivity;
 import com.example.shopx.MainActivity.SharedViewModel;
 import com.example.shopx.Model.ProductInfo;
@@ -36,7 +37,7 @@ import java.util.Locale;
 public class CartFragment extends Fragment implements CartAdapter.CartAdapterInterface {
 
     private FragmentCartBinding binding;
-    private SearchFragment.BottomNavigationListener listener;
+    private BottomNavigationListener listener;
     private CartAdapter adapter;
     private SharedViewModel viewModel;
     private List<ProductInfo> mobiles;
@@ -55,8 +56,8 @@ public class CartFragment extends Fragment implements CartAdapter.CartAdapterInt
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof SearchFragment.BottomNavigationListener) {
-            listener = (SearchFragment.BottomNavigationListener) context;
+        if (context instanceof BottomNavigationListener) {
+            listener = (BottomNavigationListener) context;
         } else {
             throw new ClassCastException(context.toString()
                     + " must implement searchProductListener");

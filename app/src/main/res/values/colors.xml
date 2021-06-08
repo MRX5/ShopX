@@ -15,4 +15,5 @@
     <color name="yellow">#F4B400</color>
     <color name="green">#3DDC84</color>
     <color name="gray_divider">#eeeeee</color>
+    <color name="profile_color">#373D3F</color>
 </resources>

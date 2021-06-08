@@ -22,8 +22,8 @@ import com.example.shopx.WishlistFragment.WishlistFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class MainActivity extends AppCompatActivity implements SearchFragment.BottomNavigationListener
-        , BottomNavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener
+        , BottomNavigationListener {
 
     private final int HOME_FRAGMENT = 1;
     private final int CART_FRAGMENT = 2;
@@ -77,8 +77,6 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Bo
             finish();
         }
         super.onBackPressed();
-        Toast.makeText(this, "" + getSupportFragmentManager().getBackStackEntryCount(), Toast.LENGTH_SHORT).show();
-
     }
 
     @Override
@@ -143,4 +141,5 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Bo
         for (int i = 0; i < fragmentManager.getBackStackEntryCount() - 1; i++)
             fragmentManager.popBackStack();
     }
+
 }

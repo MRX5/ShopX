@@ -77,14 +77,18 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         setupToolbar();
+        binding.profileInfo.setVisibility(View.GONE);
+        binding.userNameTxt.setVisibility(View.GONE);
         db.collection("Users")
                 .document(mAuth.getCurrentUser().getUid())
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        binding.profileProgressBar.setVisibility(View.GONE);
+                        binding.userNameTxt.setVisibility(View.VISIBLE);
+                        binding.profileInfo.setVisibility(View.VISIBLE);
                         binding.userNameTxt.setText(documentSnapshot.getString("username"));
                         binding.profileUsername.setText(documentSnapshot.getString("username"));
                         binding.emailTxt.setText(documentSnapshot.getString("email"));

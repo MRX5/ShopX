@@ -1,6 +1,9 @@
 # ShopX
 
 # Screenshots
+
+<img src="https://user-images.githubusercontent.com/30687866/121542697-a44d2380-ca08-11eb-81e7-d4ce62e12859.png" width="250">|
+<img src="https://user-images.githubusercontent.com/30687866/121542664-9e574280-ca08-11eb-8ef5-cfc652b860c3.png" width="250">
 <img src="https://user-images.githubusercontent.com/30687866/121540024-6c44e100-ca06-11eb-84d4-95f636f11011.png" width="250">|
 <img src="https://user-images.githubusercontent.com/30687866/121540040-6f3fd180-ca06-11eb-8c19-83586832bddd.png" width="250">|
 <img src="https://user-images.githubusercontent.com/30687866/121540053-71a22b80-ca06-11eb-986c-3685263c5557.png" width="250">

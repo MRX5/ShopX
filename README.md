@@ -1,6 +1,6 @@
 # ShopX
 
-#Screenshots
+# Screenshots
 <img src="https://user-images.githubusercontent.com/30687866/121540024-6c44e100-ca06-11eb-84d4-95f636f11011.png" width="250">|
 <img src="https://user-images.githubusercontent.com/30687866/121540040-6f3fd180-ca06-11eb-8c19-83586832bddd.png" width="250">|
 <img src="https://user-images.githubusercontent.com/30687866/121540053-71a22b80-ca06-11eb-986c-3685263c5557.png" width="250">

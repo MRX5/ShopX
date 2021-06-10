@@ -10,7 +10,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,9 +24,8 @@ import com.example.shopx.Model.Product;
 import com.example.shopx.Model.ProductInfo;
 import com.example.shopx.R;
 import com.example.shopx.Repository;
-import com.example.shopx.SearchFragment.SearchFragment;
 import com.example.shopx.Utils.Constants;
-import com.example.shopx.Utils.FormatPrice;
+import com.example.shopx.Utils.Utils;
 import com.example.shopx.databinding.FragmentProductDetailsBinding;
 
 import java.util.List;
@@ -136,9 +134,10 @@ public class ProductDetails extends Fragment {
     private void updateUi() {
         setHasOptionsMenu(true);
         binding.productName.setText(product.getName());
-        String price = FormatPrice.format(product.getPrice());
+        String price = Utils.formatPrice(product.getPrice());
         binding.productPrice.setText(price);
-        binding.productDescription.setText(product.getDescription());
+        String description=Utils.formatDescription(product.getDescription());
+        binding.productDescription.setText(description);
         Glide.with(this).load(product.getImageUrl()).into(binding.productImage);
         binding.progressBar.setVisibility(View.GONE);
         binding.contentScrollView.setVisibility(View.VISIBLE);

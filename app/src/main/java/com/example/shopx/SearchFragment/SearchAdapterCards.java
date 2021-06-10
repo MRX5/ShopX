@@ -16,7 +16,7 @@ import com.bumptech.glide.Glide;
 import com.example.shopx.Model.ProductInfo;
 import com.example.shopx.R;
 import com.example.shopx.Repository;
-import com.example.shopx.Utils.FormatPrice;
+import com.example.shopx.Utils.Utils;
 
 import java.util.List;
 
@@ -78,7 +78,7 @@ public class SearchAdapterCards extends RecyclerView.Adapter<SearchAdapterCards.
         }
         private void bind(ProductInfo currItem) {
             productName.setText(currItem.getName());
-            String price= FormatPrice.format(currItem.getPrice());
+            String price= Utils.formatPrice(currItem.getPrice());
             productPrice.setText(price);
             Glide.with(mContext).load(currItem.getImageUrl()).into(productImage);
             if(currItem.isInCart())

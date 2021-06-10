@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.shopx.Model.ProductInfo;
 import com.example.shopx.R;
-import com.example.shopx.Utils.FormatPrice;
+import com.example.shopx.Utils.Utils;
 
 import java.util.List;
 
@@ -76,7 +76,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.viewHo
 
         public void bind(ProductInfo currProduct) {
             productName.setText(currProduct.getName());
-            String price= FormatPrice.format(currProduct.getPrice());
+            String price= Utils.formatPrice(currProduct.getPrice());
             productPrice.setText(price);
             Glide.with(mContext).load(currProduct.getImageUrl()).into(productImage);
         }

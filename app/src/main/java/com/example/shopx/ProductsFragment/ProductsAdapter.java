@@ -20,7 +20,7 @@ import com.example.shopx.R;
 import java.util.List;
 
 import com.example.shopx.Repository;
-import com.example.shopx.Utils.FormatPrice;
+import com.example.shopx.Utils.Utils;
 
 public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.viewHolder> {
     private List<ProductInfo> products;
@@ -123,7 +123,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.viewHo
 
         public void bind(ProductInfo currProduct) {
             product_name.setText(currProduct.getName());
-            String price = FormatPrice.format(currProduct.getPrice());
+            String price = Utils.formatPrice(currProduct.getPrice());
             product_price.setText(price);
 
             if (currProduct.isInWish()) {

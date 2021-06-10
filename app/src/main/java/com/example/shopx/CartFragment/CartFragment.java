@@ -8,31 +8,22 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.shopx.MainActivity.BottomNavigationListener;
-import com.example.shopx.MainActivity.MainActivity;
 import com.example.shopx.MainActivity.SharedViewModel;
 import com.example.shopx.Model.ProductInfo;
-import com.example.shopx.ProductDetailsFragment.ProductDetails;
 import com.example.shopx.R;
 import com.example.shopx.Repository;
-import com.example.shopx.SearchFragment.SearchFragment;
-import com.example.shopx.Utils.FormatPrice;
 import com.example.shopx.databinding.FragmentCartBinding;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class CartFragment extends Fragment implements CartAdapter.CartAdapterInterface {
 

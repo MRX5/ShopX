@@ -1,7 +1,6 @@
 package com.example.shopx.CartFragment;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.shopx.Model.ProductInfo;
 import com.example.shopx.R;
-import com.example.shopx.Utils.FormatPrice;
+import com.example.shopx.Utils.Utils;
 
 import java.util.List;
 
@@ -88,7 +87,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.viewHolder> {
 
         public void bind(ProductInfo product) {
             productName.setText(product.getName());
-            String price = FormatPrice.format(product.getPrice());
+            String price = Utils.formatPrice(product.getPrice());
             productPrice.setText(price);
             pricePerUnit.setText(price);
             Glide.with(mContext).load(product.getImageUrl()).into(productImage);
